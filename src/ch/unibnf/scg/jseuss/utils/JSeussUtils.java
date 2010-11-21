@@ -1,4 +1,4 @@
-package sample.javaassist;
+package ch.unibnf.scg.jseuss.utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -353,9 +353,5 @@ public class JSeussUtils {
 		// "generated.ch.unibnf.seminars.scg.dif.sample.SpellCheckerFactory";
 		// JSeussUtils.generateJavaFactoryClass(toFactory, returnClass,
 		// factoryName);
-	}
-
-	private static void updateClassPath() {
-		// TODO: you may need to update the classpath
 	}
 }
