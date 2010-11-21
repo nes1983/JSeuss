@@ -3,9 +3,6 @@ package ch.unibnf.scg.jseuss.utils;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
-
-import ch.unibnf.scg.sample.spellCheck.GermanSpellChecker;
-
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -158,40 +155,28 @@ public class JSeussUtils {
 		// TODO: needs to change internal class implementation here
 	}
 
-	private static CtMethod generateFactoryMethod(CtClass ctDeclaring,
-			Class<?>[] toFactoryClasses, Class<?> returnInterfaceClass)
+	private static CtMethod[] generateFactoryMethod(CtClass ctDeclaring,
+			Class<?>[] toFactoryClasses, Class<?> returnInterface)
 			throws NotFoundException, CannotCompileException {
+		CtMethod[] ctMethods = new CtMethod[toFactoryClasses.length];
+		CtClass ctReturn = classPool.get(returnInterface.getName());
 
-		CtClass ctReturn = classPool.get(returnInterfaceClass.getName());
-
-		CtClass ctParam = classPool.get(returnInterfaceClass.getName());
-
-		String[] clazzNames = new String[toFactoryClasses.length];
-		for (int i = 0; i < toFactoryClasses.length; i++) {
-			clazzNames[i] = toFactoryClasses[i].getName();
+		for (int i = 0; i < ctMethods.length; i++) {
+			String className = toFactoryClasses[i].getName();
+			String methodName = "create" + className;
+			String methodBody = generateFactorySourceCode(className);
+			ctMethods[i] = CtNewMethod.make(Modifier.PUBLIC + Modifier.STATIC,
+					ctReturn, methodName, new CtClass[0], new CtClass[0],
+					methodBody, ctDeclaring);
 		}
 
-		String methodBody = generateFactorySourceCode(clazzNames);
-
-		CtMethod ctMethod = CtNewMethod.make(Modifier.PUBLIC + Modifier.STATIC,
-				ctReturn, "createInstance", new CtClass[] { ctParam },
-				new CtClass[0], methodBody, ctDeclaring);
-
-		return ctMethod;
+		return ctMethods;
 	}
 
-	private static String generateFactorySourceCode(String[] clazzNames) {
+	private static String generateFactorySourceCode(String clazzName) {
 		String code = "{";
-		for (int i = 0; i < clazzNames.length; i++) {
-			code += "if ($1 instanceof " + clazzNames[i] + "){";
-			code += "return new " + clazzNames[i] + "();";
-			code += "}";
-			if (i < clazzNames.length - 1) {
-				code += " else ";
-			}
-		}
-		code += " else { return null;}";
-		code += "\n}";
+
+		code += "return new " + clazzName + "();";
 		return code;
 	}
 
@@ -215,7 +200,14 @@ public class JSeussUtils {
 
 	/**
 	 * Generates a Java Factory Class for the given classes (which all must
-	 * implement the same returned interface)
+	 * implement the same returned interface). <br>
+	 * 
+	 * The Java Factory will contain <code>public static</code> methods for the
+	 * given <code>toFactoryClasses</code>. <br>
+	 * 
+	 * If <code>createJar</code> is true, then the Factory will be placed in a
+	 * Jar Archive with the same name of the factory class, and the generated
+	 * bytecode will be removed automatically.
 	 * 
 	 * @param toFactoryClasses
 	 * @param returnInterfaceClass
@@ -223,20 +215,24 @@ public class JSeussUtils {
 	 * @return
 	 */
 	public static boolean generateJavaFactoryClass(Class<?>[] toFactoryClasses,
-			Class<?> returnInterfaceClass, String factoryFullName) {
+			Class<?> returnInterfaceClass, String factoryFullName,
+			boolean createJar) {
 		boolean generated = false;
 		try {
 			CtClass ctFactory = createCtClass(factoryFullName);
 
-			CtMethod ctMethod = generateFactoryMethod(ctFactory,
+			CtMethod[] ctMethods = generateFactoryMethod(ctFactory,
 					toFactoryClasses, returnInterfaceClass);
-			ctFactory.addMethod(ctMethod);
+			for (CtMethod ctMethod : ctMethods) {
+				ctFactory.addMethod(ctMethod);
+			}
 
 			ctFactory.writeFile(".");
 
-			createJarArchive(factoryFullName);
-
-			cleanupBytecode(factoryFullName);
+			if (createJar) {
+				createJarArchive(factoryFullName);
+				cleanupBytecode(factoryFullName);
+			}
 
 			generated = true;
 		} catch (Exception e) {
@@ -249,16 +245,23 @@ public class JSeussUtils {
 	/**
 	 * Generates an interface based on a given class.<br>
 	 * Interface methods are those directly declared as PUBLIC in the given
-	 * class. The
-	 * <code>modifyFlag will indicate whether to modify the <code>inputClass</code>
-	 * to make it implement the newly generated class or not</code>
+	 * class. <br>
+	 * The <code>implementInterface</code> will indicate whether to modify the
+	 * <code>inputClass</code> to implement the newly generated interface or
+	 * not. <br>
+	 * if <code>createJar</code> is true, then the interface is placed into a
+	 * Jar Archive with the same name of the interface, and the generated
+	 * bytecode will be removed automatically.
 	 * 
 	 * @param inputClass
 	 * @param interfaceFullName
+	 * @param implementInterface
+	 * @param createJar
 	 * @throws ClassNotFoundException
 	 */
 	public static boolean generateJavaInterface(Class<?> inputClass,
-			String interfaceFullName, boolean implementInterface) {
+			String interfaceFullName, boolean implementInterface,
+			boolean createJar) {
 		boolean generated = false;
 		try {
 			CtClass ctInterface = createCtInterface(interfaceFullName);
@@ -272,14 +275,15 @@ public class JSeussUtils {
 
 			ctInterface.writeFile(".");
 
-			createJarArchive(interfaceFullName);
-
 			if (implementInterface) {
 				generateClassImplements(inputClass, ctInterface.toClass());
 				cleanupBytecode(inputClass.getName());
 			}
 
-			cleanupBytecode(interfaceFullName);
+			if (createJar) {
+				createJarArchive(interfaceFullName);
+				cleanupBytecode(interfaceFullName);
+			}
 
 			generated = true;
 		} catch (Exception e) {
@@ -315,43 +319,5 @@ public class JSeussUtils {
 			throws NotFoundException {
 		CtClass ctReturn = classPool.get(method.getReturnType().getName());
 		return ctReturn;
-	}
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		JSeussUtils.testGenerateInterface();
-		// JSeussUtils.testGenerateJavaFactory();
-		// JSeussUtils.testGenerateClassImplements();
-	}
-
-	public static void testGenerateClassImplements() {
-		// try {
-		// JSeussUtils.generateClassImplements(GermanSpellChecker.class,
-		// SpellCheckerInterface.class);
-		// } catch (ClassNotFoundException e) {
-		// e.printStackTrace();
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
-	}
-
-	public static void testGenerateInterface() {
-		JSeussUtils
-				.generateJavaInterface(
-						GermanSpellChecker.class,
-						"generated.ch.unibnf.seminars.scg.dif.sample.SpellCheckerInterface",
-						true);
-	}
-
-	public static void testGenerateJavaFactory() {
-		// Class<?>[] toFactory = new Class[] { FrenchSpellChecker.class,
-		// GermanSpellChecker.class };
-		// Class<?> returnClass = SpellCheckerInterface.class;
-		// String factoryName =
-		// "generated.ch.unibnf.seminars.scg.dif.sample.SpellCheckerFactory";
-		// JSeussUtils.generateJavaFactoryClass(toFactory, returnClass,
-		// factoryName);
 	}
 }
