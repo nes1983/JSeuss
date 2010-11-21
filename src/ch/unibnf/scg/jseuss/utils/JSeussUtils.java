@@ -155,7 +155,7 @@ public class JSeussUtils {
 		// TODO: needs to change internal class implementation here
 	}
 
-	private static CtMethod[] generateFactoryMethod(CtClass ctDeclaring,
+	private static CtMethod[] generateFactoryMethods(CtClass ctDeclaring,
 			Class<?>[] toFactoryClasses, Class<?> returnInterface)
 			throws NotFoundException, CannotCompileException {
 		CtMethod[] ctMethods = new CtMethod[toFactoryClasses.length];
@@ -221,7 +221,7 @@ public class JSeussUtils {
 		try {
 			CtClass ctFactory = createCtClass(factoryFullName);
 
-			CtMethod[] ctMethods = generateFactoryMethod(ctFactory,
+			CtMethod[] ctMethods = generateFactoryMethods(ctFactory,
 					toFactoryClasses, returnInterfaceClass);
 			for (CtMethod ctMethod : ctMethods) {
 				ctFactory.addMethod(ctMethod);
