@@ -1,30 +1,23 @@
-package ch.unibnf.scg.jseuss.utils;
+package ch.unibnf.scg.jseuss.core;
 
 import java.io.File;
+
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JCase;
-import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JEnumConstant;
 import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JSwitch;
 import com.sun.codemodel.JVar;
 
-public class JSeussUtils_CodeModel {
+public class JSeuss_CodeModel {
 
 	public boolean generateJavaFactory(Class<?> baseInterface, String factoryPackage,
 			String factoryName, Class<?>[] selectorEnums) {
@@ -43,7 +36,6 @@ public class JSeussUtils_CodeModel {
 			JSwitch bodySwitch = methodBody._switch(methodParameter);
 			
 			// create an enum which will make it easy to use our factory
-			JEnumConstant[] theEnumConsts = new JEnumConstant[selectorEnums.length];
 			for(int i = 0; i < selectorEnums.length; i++){
 				Class<?> c = selectorEnums[i];
 				JCase aCase = bodySwitch._case(factoryEnum.enumConstant(c.getSimpleName()));
@@ -98,12 +90,5 @@ public class JSeussUtils_CodeModel {
 			generated = false;
 		}
 		return generated;
-	}
-
-	private String getPackageName(Class<?> concreteClass) {
-		String string = concreteClass.toString();
-		string = string.substring(string.indexOf(" ") + 1);
-		string = string.substring(0, string.lastIndexOf("."));
-		return string;
 	}
 }
