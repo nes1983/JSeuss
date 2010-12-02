@@ -8,10 +8,11 @@ public class EmailSender {
 	GermanSpellChecker spellChecker; 
 	
 	public EmailSender() {
-		spellChecker = new GermanSpellChecker();
+		
 	}
 	
 	public void sendEmail(Email email){
+		spellChecker = new GermanSpellChecker();
 		
 		boolean isValid = spellChecker.check(email);
 		if(isValid){
