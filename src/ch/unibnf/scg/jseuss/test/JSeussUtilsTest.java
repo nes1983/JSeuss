@@ -18,7 +18,7 @@ import org.junit.Test;
 
 import ch.unibnf.scg.jseuss.core.JSeuss_Javaassist;
 import ch.unibnf.scg.sample.emailservice.EmailSender;
-import ch.unibnf.scg.sample.factory.SpellCheckerFactory;
+import ch.unibnf.scg.sample.factory.FrenchSpellCheckerFactory;
 import ch.unibnf.scg.sample.spellCheck.FrenchSpellChecker;
 import ch.unibnf.scg.sample.spellCheck.GermanSpellChecker;
 
@@ -30,55 +30,24 @@ public class JSeussUtilsTest {
 
 	@Test
 	public void testFactorizeLocalVariable_Jar() {
-//		Class containerClass = EmailSender.class;
-//		Class localVarClass = GermanSpellChecker.class;
-//		Class newVarClass = FrenchSpellChecker.class;
-//		Class factoryClass = SpellCheckerFactory.class;
-//		
-//		String factoryMethod = "createInstance";
-//		boolean done = false;
-//		try {
-//			done = JSeussUtils.factorizeLocalVariable(containerClass, localVarClass,
-//					newVarClass, factoryClass, factoryMethod, true);
-//		} catch (NotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (CannotCompileException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		assertTrue(done);
-	}
-	
-	@Test
-	public void testFactorizeLocalVariable_NoJar() {
 		Class containerClass = EmailSender.class;
 		Class localVarClass = GermanSpellChecker.class;
 		Class newVarClass = FrenchSpellChecker.class;
-		Class factoryClass = SpellCheckerFactory.class;
-		
+		Class factoryClass = FrenchSpellCheckerFactory.class;
+
 		String factoryMethod = "createInstance";
 		boolean done = false;
 		try {
-			done = JSeuss_Javaassist.factorizeLocalVariable(containerClass, localVarClass,
-					newVarClass, factoryClass, factoryMethod, false);
+			done = JSeuss_Javaassist.factorizeLocalVariable(containerClass,
+					localVarClass, newVarClass, factoryClass, factoryMethod,
+					true);
 		} catch (NotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (CannotCompileException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		assertTrue(done);
@@ -100,10 +69,10 @@ public class JSeussUtilsTest {
 
 	@Test
 	public void testGenerateJavaInterface_CreateJar() {
-		// boolean generated = JSeussUtils
+		// boolean generated = JSeuss_Javaassist
 		// .generateJavaInterface(
 		// GermanSpellChecker.class,
-		// "generated.ch.unibnf.seminars.scg.dif.sample.SpellCheckerInterface",
+		// "generated.ch.unibnf.SpellCheckerInterface",
 		// true, true);
 		// assertTrue("generated=false", generated);
 	}
