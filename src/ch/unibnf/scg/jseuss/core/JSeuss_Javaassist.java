@@ -1,5 +1,6 @@
 package ch.unibnf.scg.jseuss.core;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import ch.unibnf.scg.jseuss.utils.JSeussUtils;
@@ -12,6 +13,11 @@ import javassist.CtMethod;
 import javassist.CtNewMethod;
 import javassist.Modifier;
 import javassist.NotFoundException;
+import javassist.bytecode.AnnotationsAttribute;
+import javassist.bytecode.ConstPool;
+import javassist.bytecode.annotation.AnnotationsWriter;
+import javassist.expr.ExprEditor;
+import javassist.expr.NewExpr;
 
 public class JSeuss_Javaassist {
 
@@ -23,41 +29,51 @@ public class JSeuss_Javaassist {
 			throws NotFoundException, ClassNotFoundException,
 			CannotCompileException, IOException {
 		boolean done = false;
-		CtClass ctContainer = classPool.getCtClass(containerClass.getName());
+		final CtClass ctContainer = classPool.getCtClass(containerClass
+				.getName());
+		// ctContainer.stopPruning(true);
 		CtClass ctCurrentType = classPool.getCtClass(localVariableClass
 				.getName());
+		// ctContainer.stopPruning(true);
 		CtClass ctNewType = classPool.getCtClass(newVariableClass.getName());
+		// ctContainer.stopPruning(true);
 		CtClass ctFactory = classPool.getCtClass(factoryClass.getName());
+		// ctContainer.stopPruning(true);
 
 		CtField[] fields = ctContainer.getDeclaredFields();
 		CtField field = null;
-		CtField newField = null;
-		String name="";
+		String name = "";
 		for (int i = 0; i < fields.length; i++) {
 			field = fields[i];
 			name = field.getName();
 			if (field.getType().equals(ctCurrentType)) {
 				field.setType(ctNewType);
-//				ctContainer.removeField(field);
-				newField = new CtField(ctNewType, name+2, ctContainer);
-				newField.setModifiers(Modifier.PUBLIC);
-				ctContainer.addField(newField,
-						CtField.Initializer.byCall(ctFactory, factoryMethod));
+				// ctContainer.removeField(field);
 				break;
 			}
 		}
-		
-		// redirect all current methods to the new methods
-		CtMethod[] ctCurrents = ctCurrentType.getDeclaredMethods();
-		for (int i = 0; i < ctCurrents.length; i++) {
-			CtMethod currMethod = ctCurrents[i];
-			String mname = currMethod.getName();
-			CtMethod newMethod = ctNewType.getDeclaredMethod(mname);
-			if(newMethod != null){
-				CodeConverter converter = new CodeConverter();
-				converter.replaceNew(ctCurrentType, ctNewType);
-				ctContainer.instrument(converter);
-			}
+		CtField newField = new CtField(ctNewType, name + 2, ctContainer);
+		newField.setModifiers(Modifier.PUBLIC);
+		ctContainer.addField(newField,
+				CtField.Initializer.byCall(ctFactory, factoryMethod, null));
+		// // redirect all current methods to the new methods
+		// CtMethod[] ctCurrents = ctCurrentType.getDeclaredMethods();
+		// for (int i = 0; i < ctCurrents.length; i++) {
+		// CtMethod currMethod = ctCurrents[i];
+		// String mname = currMethod.getName();
+		// CtMethod newMethod = ctNewType.getDeclaredMethod(mname);
+		// if(newMethod != null){
+		// // CodeConverter converter = new CodeConverter();
+		// // converter.replaceNew(ctCurrentType, ctNewType);
+		// // ctContainer.instrument(converter);
+		// ctContainer.instrument(new NewExprEditor(ctCurrentType, ctNewType));
+		// }
+		// }
+
+		CtMethod[] ctMethods = ctContainer.getDeclaredMethods();
+		for (int i = 0; i < ctMethods.length; i++) {
+			CtMethod ctmethod = ctMethods[i];
+			ctmethod.instrument(new NewExprEditor(ctCurrentType, ctNewType, ctFactory));
 		}
 
 		ctContainer.writeFile(".");
