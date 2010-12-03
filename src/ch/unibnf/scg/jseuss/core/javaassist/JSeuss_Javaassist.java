@@ -86,7 +86,7 @@ public class JSeuss_Javaassist {
 		}
 
 		// write the modified class
-		ctContainer.writeFile("C:/temp/javaassist");
+		ctContainer.writeFile(".");
 
 		if (createJar) {
 			JSeussUtils.createJarArchive(containerClass.getName());
