@@ -1,4 +1,4 @@
-package ch.unibnf.scg.jseuss.core;
+package ch.unibnf.scg.jseuss.core.other.niko;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

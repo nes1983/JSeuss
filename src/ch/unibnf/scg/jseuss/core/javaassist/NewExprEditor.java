@@ -1,4 +1,4 @@
-package ch.unibnf.scg.jseuss.core;
+package ch.unibnf.scg.jseuss.core.javaassist;
 
 import javassist.CannotCompileException;
 import javassist.CtClass;

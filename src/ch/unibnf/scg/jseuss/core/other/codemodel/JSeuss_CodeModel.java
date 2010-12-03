@@ -1,4 +1,4 @@
-package ch.unibnf.scg.jseuss.core;
+package ch.unibnf.scg.jseuss.core.other.codemodel;
 
 import java.io.File;
 

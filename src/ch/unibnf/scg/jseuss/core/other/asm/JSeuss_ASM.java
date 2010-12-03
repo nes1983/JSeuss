@@ -1,4 +1,4 @@
-package ch.unibnf.scg.jseuss.core;
+package ch.unibnf.scg.jseuss.core.other.asm;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -8,33 +8,40 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Method;
 
+import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.signature.SignatureVisitor;
 import org.objectweb.asm.signature.SignatureWriter;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.util.ASMifierClassVisitor;
 
 import ch.unibnf.scg.jseuss.utils.JSeussUtils;
+import ch.unibnf.scg.sample.factory.FrenchSpellCheckerFactory;
 import ch.unibnf.scg.sample.spellCheck.GermanSpellChecker;
 
 public class JSeuss_ASM implements Opcodes {
-	
+
 	private static MethodNode createInterfaceMethodNode(Method amethod) {
-		
-		String[] exceptionNames = extractMethodExceptions(amethod.getExceptionTypes());
+
+		String[] exceptionNames = extractMethodExceptions(amethod
+				.getExceptionTypes());
 
 		MethodNode method = new MethodNode(ACC_PUBLIC + ACC_ABSTRACT,
 				amethod.getName(), Type.getMethodDescriptor(amethod), null,
 				exceptionNames);
-		
+
 		return method;
 	}
 
 	private static ClassNode createInterfaceNode(String interfaceFullName) {
-		interfaceFullName = interfaceFullName != null ? interfaceFullName.replace(
-				'.', '/') : "";
+		interfaceFullName = interfaceFullName != null ? interfaceFullName
+				.replace('.', '/') : "";
 
 		ClassNode cn = new ClassNode();
 		cn.access = ACC_PUBLIC + ACC_INTERFACE;
@@ -42,10 +49,10 @@ public class JSeuss_ASM implements Opcodes {
 		cn.superName = "java/lang/Object";
 		return cn;
 	}
-	
-	private static ClassNode createClassNode(String classFullName){
-		classFullName = classFullName != null ? classFullName.replace(
-				'.', '/') : "";
+
+	private static ClassNode createClassNode(String classFullName) {
+		classFullName = classFullName != null ? classFullName.replace('.', '/')
+				: "";
 
 		ClassNode cn = new ClassNode();
 		cn.access = ACC_PUBLIC;
@@ -80,11 +87,12 @@ public class JSeuss_ASM implements Opcodes {
 	 *            The package of the generated interface
 	 * @param specifcMethods
 	 *            one or more method names
-	 * @throws IOException 
-	 * @throws CannotCompileException 
+	 * @throws IOException
+	 * @throws CannotCompileException
 	 */
 	public static boolean generateJavaInterface(Class<?> inputClass,
-			String interfaceFullName, boolean implementInterface, boolean createJar) throws IOException {
+			String interfaceFullName, boolean implementInterface,
+			boolean createJar) throws IOException {
 		boolean generated = false;
 
 		ClassNode newInterface = createInterfaceNode(interfaceFullName);
@@ -92,26 +100,26 @@ public class JSeuss_ASM implements Opcodes {
 		Method[] inputMethods = inputClass.getDeclaredMethods();
 		for (int i = 0; i < inputMethods.length; i++) {
 			Method amethod = inputMethods[i];
-			
-			MethodNode newMethod = createInterfaceMethodNode(amethod); 
+
+			MethodNode newMethod = createInterfaceMethodNode(amethod);
 			newInterface.methods.add(newMethod);
 		}
 
 		generated = writeClassFile(newInterface);
-		
+
 		if (implementInterface) {
-//			generateClassImplements(inputClass, newInterface,
-//					createJar);
+			// generateClassImplements(inputClass, newInterface,
+			// createJar);
 		}
 
 		if (createJar) {
 			JSeussUtils.createJarArchive(interfaceFullName);
-//			JSeussUtils.cleanupBytecode(interfaceFullName);
+			// JSeussUtils.cleanupBytecode(interfaceFullName);
 		}
 
 		return generated;
 	}
-	
+
 	/**
 	 * Generates a Java Factory Class for the given classes (which all must
 	 * implement the same returned interface). <br>
@@ -135,13 +143,13 @@ public class JSeuss_ASM implements Opcodes {
 		try {
 			ClassNode ctFactory = createClassNode(factoryFullName);
 
-			CtMethod[] ctMethods = generateFactoryMethods(ctFactory,
+			MethodNode[] ctMethods = generateFactoryMethods(ctFactory,
 					toFactoryClasses, returnInterfaceClass);
-			for (CtMethod ctMethod : ctMethods) {
-				ctFactory.addMethod(ctMethod);
-			}
-
-			ctFactory.writeFile(".");
+//			for (CtMethod ctMethod : ctMethods) {
+//				ctFactory.addMethod(ctMethod);
+//			}
+//
+//			ctFactory.writeFile(".");
 
 			if (createJar) {
 				JSeussUtils.createJarArchive(factoryFullName);
@@ -155,29 +163,44 @@ public class JSeuss_ASM implements Opcodes {
 		}
 		return generated;
 	}
-	
-	private static MethodNode[] generateFactoryMethods(ClassNode ctDeclaring,
-			Class<?>[] toFactoryClasses, Class<?> returnInterface) {
-		MethodNode[] ctMethods = new MethodNode[toFactoryClasses.length];
-		ClassNode ctReturn = classPool.getCtClass(returnInterface.getName());
 
-		for (int i = 0; i < ctMethods.length; i++) {
+	private static ClassNode getClassNode(Class<?> aclass) throws IOException {
+		ClassNode cn = new ClassNode();
+
+		String name = aclass.getName().replace(".", "/");
+		ClassReader cr = new ClassReader(name);
+		cr.accept(cn, 0);
+
+		return cn;
+	}
+
+	private static MethodNode[] generateFactoryMethods(ClassNode ctDeclaring,
+			Class<?>[] toFactoryClasses, Class<?> returnInterface) throws IOException {
+		MethodNode[] ctMethods = new MethodNode[toFactoryClasses.length];
+		ClassNode ctReturn = getClassNode(returnInterface);
+
+		for (int i = 0; i < toFactoryClasses.length; i++) {
 			String fullClassName = toFactoryClasses[i].getName();
 			String simpleClassName = toFactoryClasses[i].getSimpleName();
 			String methodName = "create" + simpleClassName;
-			String methodBody = generateFactorySourceCode(fullClassName);
-			ctMethods[i] = CtNewMethod.make(Modifier.PUBLIC + Modifier.STATIC,
-					ctReturn, methodName, new CtClass[0], new CtClass[0],
-					methodBody, ctDeclaring);
+			MethodNode methodNode = new MethodNode(ACC_PUBLIC + ACC_STATIC,
+					methodName, Type.getDescriptor(returnInterface), null, null);
+			InsnList instructions = new InsnList();
+			TypeInsnNode newType = new TypeInsnNode(NEW, Type.getDescriptor(returnInterface));
+			ctMethods[i] = methodNode;
 		}
 
 		return ctMethods;
 	}
 
-	public static void main(String[] args){
+	public static void main(String[] args) {
 		try {
-			generateJavaInterface(GermanSpellChecker.class, "ch.generated.SpellCheckerInterface_ASM", true, true);
-		} catch (IOException e) {
+			// generateJavaInterface(GermanSpellChecker.class,
+			// "ch.generated.SpellCheckerInterface_ASM", true, true);
+			ASMifierClassVisitor
+					.main(new String[] { FrenchSpellCheckerFactory.class
+							.getName() });
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -190,7 +213,7 @@ public class JSeuss_ASM implements Opcodes {
 
 		try {
 			String directories = "";
-			if(cn.name.lastIndexOf("/")> -1){
+			if (cn.name.lastIndexOf("/") > -1) {
 				// get packages
 				directories = cn.name.substring(0, cn.name.lastIndexOf("/"));
 			} else {
@@ -202,8 +225,8 @@ public class JSeuss_ASM implements Opcodes {
 			System.out.println(dir.getAbsolutePath());
 			System.out.println(dir.getCanonicalPath());
 			System.out.println(dir.getPath());
-			
-			File binFile = new File(cn.name+".class");
+
+			File binFile = new File(cn.name + ".class");
 			FileOutputStream fw = new FileOutputStream(binFile);
 			fw.write(byteCode);
 			fw.flush();

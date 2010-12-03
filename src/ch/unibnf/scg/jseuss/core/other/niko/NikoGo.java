@@ -1,4 +1,4 @@
-package ch.unibnf.scg.jseuss.core;
+package ch.unibnf.scg.jseuss.core.other.niko;
 
 import ch.unibnf.scg.sample.emailservice.EmailSender;
 import ch.unibnf.scg.sample.model.Email;

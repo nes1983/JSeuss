@@ -1,8 +1,11 @@
-package ch.unibnf.scg.jseuss.core;
+package ch.unibnf.scg.jseuss.core.javaassist;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
+
+import com.google.inject.Provider;
+
 import ch.unibnf.scg.jseuss.utils.JSeussUtils;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
@@ -23,6 +26,77 @@ public class JSeuss_Javaassist {
 
 	private static ClassPool classPool = ClassPool.getDefault();
 
+	public static boolean factorizeToGuice(Class<?> containerClass,
+			Class<?> currentClassType, Class<?> newInterfaceType,
+			boolean createJar) throws NotFoundException,
+			ClassNotFoundException, CannotCompileException, IOException {
+		boolean done = false;
+		CtClass ctContainer = classPool.getCtClass(containerClass.getName());
+		CtClass ctCurrentType = classPool
+				.getCtClass(currentClassType.getName());
+		CtClass ctNewType = classPool.getCtClass(newInterfaceType.getName());
+		CtClass ctGuiceProvider = classPool
+				.getCtClass(Provider.class.getName());
+
+		String instanceVarName = newInterfaceType.getSimpleName().toLowerCase()
+				+ "Provider";
+		CtField providerField = null;
+		try {
+			providerField = ctContainer.getField(instanceVarName);
+		} catch (NotFoundException e) {
+			providerField = null;
+		}
+		if (providerField == null) {
+			providerField = new CtField(ctGuiceProvider, instanceVarName,
+					ctContainer);
+			providerField.setModifiers(Modifier.PUBLIC);
+			// TODO: we should add @Inject annotation here.
+			ConstPool constPool = ctContainer.getClassFile().getConstPool();
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			AnnotationsWriter writer = new AnnotationsWriter(output, constPool);
+			writer.numAnnotations(1);
+			writer.annotation("Inject", 0);
+			writer.close();
+			byte[] attribute_info = output.toByteArray();
+			AnnotationsAttribute anno = new AnnotationsAttribute(constPool,
+					AnnotationsAttribute.visibleTag, attribute_info);
+			// add the ctField to ctContainer
+			ctContainer.addField(providerField);
+		} else {
+			if (providerField.getType().equals(ctGuiceProvider)) {
+				throw new RuntimeException(
+						"instance variable with same name and [Guice type] exists, name: "
+								+ instanceVarName);
+			} else {
+				throw new RuntimeException(
+						"instance variable with same name exists, name: "
+								+ instanceVarName);
+			}
+		}
+
+		// for all methods declared in ctContainer
+		for (CtMethod method : ctContainer.getDeclaredMethods()) {
+			// first instrument the old data type
+			CodeConverter converter = new CodeConverter();
+			converter.replaceNew(ctCurrentType, ctNewType);
+			method.instrument(converter);
+
+			// second replace the new expr with Guice provider get()
+			method.instrument(new NewGuiceExprEditor(ctNewType, providerField));
+		}
+
+		// write the modified class
+		ctContainer.writeFile("C:/temp/javaassist");
+
+		if (createJar) {
+			JSeussUtils.createJarArchive(containerClass.getName());
+			JSeussUtils.cleanupBytecode(containerClass.getName());
+		}
+
+		done = true;
+		return done;
+	}
+
 	public static boolean factorizeLocalVariable(Class<?> containerClass,
 			Class<?> localVariableClass, Class<?> newVariableClass,
 			Class<?> factoryClass, String factoryMethod, boolean createJar)
@@ -31,14 +105,10 @@ public class JSeuss_Javaassist {
 		boolean done = false;
 		final CtClass ctContainer = classPool.getCtClass(containerClass
 				.getName());
-		// ctContainer.stopPruning(true);
 		CtClass ctCurrentType = classPool.getCtClass(localVariableClass
 				.getName());
-		// ctContainer.stopPruning(true);
 		CtClass ctNewType = classPool.getCtClass(newVariableClass.getName());
-		// ctContainer.stopPruning(true);
 		CtClass ctFactory = classPool.getCtClass(factoryClass.getName());
-		// ctContainer.stopPruning(true);
 
 		CtField[] fields = ctContainer.getDeclaredFields();
 		CtField field = null;
@@ -73,7 +143,8 @@ public class JSeuss_Javaassist {
 		CtMethod[] ctMethods = ctContainer.getDeclaredMethods();
 		for (int i = 0; i < ctMethods.length; i++) {
 			CtMethod ctmethod = ctMethods[i];
-			ctmethod.instrument(new NewExprEditor(ctCurrentType, ctNewType, ctFactory));
+			ctmethod.instrument(new NewExprEditor(ctCurrentType, ctNewType,
+					ctFactory));
 		}
 
 		ctContainer.writeFile(".");

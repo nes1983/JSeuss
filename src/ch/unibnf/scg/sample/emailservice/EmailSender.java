@@ -5,14 +5,12 @@ import ch.unibnf.scg.sample.spellCheck.GermanSpellChecker;
 
 public class EmailSender {
 	
-	GermanSpellChecker spellChecker; 
-	
 	public EmailSender() {
 		
 	}
 	
 	public void sendEmail(Email email){
-		spellChecker = new GermanSpellChecker();
+		GermanSpellChecker spellChecker = new GermanSpellChecker();
 		
 		boolean isValid = spellChecker.check(email);
 		if(isValid){
