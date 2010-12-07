@@ -1,4 +1,4 @@
-package ch.unibnf.scg.jseuss.core.javaassist;
+package ch.unibnf.scg.jseuss.core.javaassist.generic;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,7 +17,11 @@ import javassist.CtNewMethod;
 import javassist.Modifier;
 import javassist.NotFoundException;
 import javassist.bytecode.AnnotationsAttribute;
+import javassist.bytecode.BadBytecode;
+import javassist.bytecode.CodeAttribute;
+import javassist.bytecode.CodeIterator;
 import javassist.bytecode.ConstPool;
+import javassist.bytecode.MethodInfo;
 import javassist.bytecode.annotation.AnnotationsWriter;
 import javassist.expr.ExprEditor;
 import javassist.expr.NewExpr;
@@ -41,11 +45,14 @@ public class JSeuss_Javaassist {
 		String instanceVarName = newInterfaceType.getSimpleName().toLowerCase()
 				+ "Provider";
 		CtField providerField = null;
+
 		try {
 			providerField = ctContainer.getField(instanceVarName);
 		} catch (NotFoundException e) {
 			providerField = null;
 		}
+		
+		// no instance variables exist with above name, good
 		if (providerField == null) {
 			providerField = new CtField(ctGuiceProvider, instanceVarName,
 					ctContainer);
@@ -60,6 +67,7 @@ public class JSeuss_Javaassist {
 			byte[] attribute_info = output.toByteArray();
 			AnnotationsAttribute anno = new AnnotationsAttribute(constPool,
 					AnnotationsAttribute.visibleTag, attribute_info);
+			providerField.setAttribute("com.google.inject.Inject", attribute_info);
 			// add the ctField to ctContainer
 			ctContainer.addField(providerField);
 		} else {
@@ -72,6 +80,23 @@ public class JSeuss_Javaassist {
 						"instance variable with same name exists, name: "
 								+ instanceVarName);
 			}
+		}
+		
+		// look for any instance variables of type ctCurrentType
+		CtField[] fields = ctContainer.getFields();
+		boolean instanceVarFound = false;
+		for (CtField ctField : fields) {
+			if (ctField.getType().equals(ctCurrentType)){
+				ctField.setType(ctNewType);
+				instanceVarFound = true;
+				break;
+			}
+		}
+		
+		if(instanceVarFound){
+			CodeConverter converter = new CodeConverter();
+			converter.replaceNew(ctCurrentType, ctNewType);
+			ctContainer.instrument(converter); 
 		}
 
 		// for all methods declared in ctContainer
@@ -86,7 +111,7 @@ public class JSeuss_Javaassist {
 		}
 
 		// write the modified class
-		ctContainer.writeFile(".");
+		ctContainer.writeFile("c:/temp/");
 
 		if (createJar) {
 			JSeussUtils.createJarArchive(containerClass.getName());

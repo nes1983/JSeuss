@@ -27,6 +27,27 @@ public class JSeussUtils {
 		}
 	}
 
+	public static void createJarArchive(String jarname, String dirpath)
+			throws IOException {
+
+		jarname += jarname.endsWith(".jar") ? "" : ".jar";
+		dirpath += dirpath.endsWith("/") ? "" : "/";
+		File outputJar = new File(dirpath + jarname);
+		String command = "jar cf " + outputJar.getAbsolutePath() + " "
+				+ outputJar.getPath();
+		Process process = Runtime.getRuntime().exec(command);
+
+		try {
+			int wait = process.waitFor();
+			if (wait != 0 || process.exitValue() != 0) {
+				System.out
+						.println("jaring process didn't terminate gracefully");
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * creates a Jar file for any CtClass entity, based on the full class and
 	 * package path.<br>

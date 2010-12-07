@@ -1,5 +1,11 @@
 package ch.unibnf.scg.sample.model;
 
+/**
+ * This is a basic Email dummy structure.
+ * 
+ * @author tgdmoah1
+ * 
+ */
 public class Email {
 
 	private String from;

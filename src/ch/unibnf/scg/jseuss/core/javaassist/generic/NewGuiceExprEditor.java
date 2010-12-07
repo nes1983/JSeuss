@@ -1,4 +1,4 @@
-package ch.unibnf.scg.jseuss.core.javaassist;
+package ch.unibnf.scg.jseuss.core.javaassist.generic;
 
 import javassist.CannotCompileException;
 import javassist.CtClass;
@@ -10,23 +10,25 @@ import javassist.expr.NewExpr;
 public class NewGuiceExprEditor extends ExprEditor {
 
 	private CtClass ctInterfaceType;
-	private CtField ctGuiceProvider;
+	private CtField ctGuiceInjector;
 
-	public NewGuiceExprEditor(CtClass ctInterface, CtField guiceProvider) {
+	public NewGuiceExprEditor(CtClass ctInterface, CtField guiceInjector) {
 		ctInterfaceType = ctInterface;
-		ctGuiceProvider = guiceProvider;
+		ctGuiceInjector = guiceInjector;
 	}
 
 	public void edit(NewExpr e) throws CannotCompileException {
 
 		try {
 			// only replace new expr for ctInterface type; not any "new expr"!
-			if (e.getClassName().equals(
-					ctInterfaceType.getName())) {
-				String replacement = "$_=" + "($r)" + ctGuiceProvider.getName() + ".get();";
-				
+			String exprClassName = e.getClassName();
+			if (exprClassName.equals(ctInterfaceType.getName())) {
+				String replacement = "$_=" + "($r)" + ctGuiceInjector.getName()
+						+ ".getInstance(" + ctInterfaceType.getName()
+						+ ".class);";
+
 				System.out.println(replacement);
-				
+
 				e.replace(replacement);
 			}
 		} catch (Exception e1) {

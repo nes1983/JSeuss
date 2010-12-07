@@ -1,6 +1,7 @@
 package ch.unibnf.scg.jseuss.core.other.asm;
 
 import java.io.File;
+
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -22,8 +23,6 @@ import org.objectweb.asm.tree.VarInsnNode;
 import org.objectweb.asm.util.ASMifierClassVisitor;
 
 import ch.unibnf.scg.jseuss.utils.JSeussUtils;
-import ch.unibnf.scg.sample.factory.FrenchSpellCheckerFactory;
-import ch.unibnf.scg.sample.spellCheck.GermanSpellChecker;
 
 public class JSeuss_ASM implements Opcodes {
 
@@ -197,9 +196,9 @@ public class JSeuss_ASM implements Opcodes {
 		try {
 			// generateJavaInterface(GermanSpellChecker.class,
 			// "ch.generated.SpellCheckerInterface_ASM", true, true);
-			ASMifierClassVisitor
-					.main(new String[] { FrenchSpellCheckerFactory.class
-							.getName() });
+//			ASMifierClassVisitor
+//					.main(new String[] { FrenchSpellCheckerFactory.class
+//							.getName() });
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

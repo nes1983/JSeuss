@@ -1,26 +1,20 @@
 /**
  * 
  */
-package ch.unibnf.scg.jseuss.test;
+package ch.unibnf.scg.jseuss.core.javaassist.generic.test;
 
 import static org.junit.Assert.*;
-
-import generated.ch.unibnf.SpellCheckerInterface;
 
 import java.io.IOException;
 
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import ch.unibnf.scg.jseuss.core.javaassist.JSeuss_Javaassist;
+import ch.unibnf.scg.jseuss.core.javaassist.generic.JSeuss_Javaassist;
 import ch.unibnf.scg.sample.emailservice.EmailSender;
-import ch.unibnf.scg.sample.factory.FrenchSpellCheckerFactory;
 import ch.unibnf.scg.sample.spellCheck.FrenchSpellChecker;
 import ch.unibnf.scg.sample.spellCheck.GermanSpellChecker;
 
@@ -41,16 +35,16 @@ public class JSeussUtilsTest {
 		containerClass = EmailSender.class;
 		localVarClass = GermanSpellChecker.class;
 		newVarClass = FrenchSpellChecker.class;
-		factoryClass = FrenchSpellCheckerFactory.class;
-		interfaceClass = SpellCheckerInterface.class;
+//		factoryClass = FrenchSpellCheckerFactory.class;
+//		interfaceClass = SpellCheckerInterface.class;
 	}
-
+	
 	@Test
-	public void testFactorizeToGuice() {
+	public void testFactorizeJavaassistToGuice_Jar() {
 		boolean done = false;
 		try {
 			done = JSeuss_Javaassist.factorizeToGuice(containerClass,
-					localVarClass, interfaceClass, false);
+					localVarClass, interfaceClass, true);
 		} catch (NotFoundException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
