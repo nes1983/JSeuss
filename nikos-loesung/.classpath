@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="ch.unibe.jexample.JEXAMPLE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="lib/jexample-4.5-391.jar"/>
+	<classpathentry kind="lib" path="lib/aopalliance.jar"/>
+	<classpathentry kind="lib" path="lib/guice-2.0.jar" sourcepath="lib/guice-2.0-src"/>
+	<classpathentry kind="lib" path="lib/guice-assistedinject-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/guice-jmx-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/guice-jndi-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/guice-multibindings-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/guice-struts2-plugin-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/guice-throwingproviders-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/google-collect-1.0.jar" sourcepath="lib/src-1.0.zip"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
