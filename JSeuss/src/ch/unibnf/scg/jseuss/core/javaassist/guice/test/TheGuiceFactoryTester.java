@@ -1,16 +1,21 @@
 package ch.unibnf.scg.jseuss.core.javaassist.guice.test;
 
 import static org.junit.Assert.*;
+
+import java.io.IOException;
+
+import javassist.CannotCompileException;
+import javassist.NotFoundException;
 import generated.guice.SpellCheckerInterface;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import ch.unibe.niko.EmailSender;
+import ch.unibe.niko.FrenchSpellChecker;
+import ch.unibe.niko.GermanSpellChecker;
 import ch.unibnf.scg.jseuss.core.javaassist.guice.TheGuiceFactory;
-import ch.unibnf.scg.sample.emailservice.EmailSender;
-import ch.unibnf.scg.sample.spellCheck.FrenchSpellChecker;
-import ch.unibnf.scg.sample.spellCheck.GermanSpellChecker;
 
 public class TheGuiceFactoryTester {
 
@@ -27,7 +32,7 @@ public class TheGuiceFactoryTester {
 	}
 
 	@Test
-	public void testMakeJavaInterface() {
+	public void testMakeJavaInterface() throws CannotCompileException, NotFoundException, IOException {
 		String interfaceName = "NewSpellCheckerInterface";
 		boolean createJar = true;
 		Class<?> i = guiceFactory.makeJavaInterface(GermanSpellChecker.class,

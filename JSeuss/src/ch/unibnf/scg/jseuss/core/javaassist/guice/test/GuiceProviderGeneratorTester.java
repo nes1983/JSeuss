@@ -7,9 +7,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import ch.unibe.niko.FrenchSpellChecker;
 import ch.unibnf.scg.jseuss.core.javaassist.guice.ClassDetails;
 import ch.unibnf.scg.jseuss.core.javaassist.guice.GuiceProviderGenerator;
-import ch.unibnf.scg.sample.spellCheck.FrenchSpellChecker;
 
 public class GuiceProviderGeneratorTester {
 	

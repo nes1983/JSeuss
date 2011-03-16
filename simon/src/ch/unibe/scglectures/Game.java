@@ -2,30 +2,34 @@ package ch.unibe.scglectures;
 
 import java.io.PrintStream;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
-public abstract class Game implements Runnable {
+
+public abstract class Game implements Runnable, IGame {
 
 	private PrintStream out;
-	private List<Player> players = new LinkedList<Player>();
-	private Iterator<Player> iterator;
-	private Player current;
+	@Inject
+	private Provider<List<IPlayer>> playerProvider;
+	private List<IPlayer> players = playerProvider.get();
+	private Iterator<IPlayer> iterator;
+	private IPlayer current;
 
-    public Player addPlayer() {
+    public IPlayer addPlayer() {
         assert !isRunning();
-        Player player = this.makePlayer();
+        IPlayer player = this.makePlayer();
         players.add(player); 
         return player;
     }
 
-	public Player currentPlayer() {
+	public IPlayer currentPlayer() {
         return current;
     }
 
-    public Player getWinner() {
-        for (Player each: players) if (each.isWinner()) return each;
+    public IPlayer getWinner() {
+        for (IPlayer each: players) if (each.isWinner()) return each;
         return null;
     }
 
@@ -37,11 +41,11 @@ public abstract class Game implements Runnable {
         return iterator != null && current != null && getWinner() == null;
     }
 
-    protected abstract Player makePlayer();
+    public abstract IPlayer makePlayer();
 
     public abstract void playNextTurn();
 
-    private void println(Object object) {
+    public void println(Object object) {
         if (out != null) out.println(object);
     }
 
@@ -64,7 +68,7 @@ public abstract class Game implements Runnable {
         current = iterator.next();
     }
     
-    protected void switchPlayer() {
+    public void switchPlayer() {
         if (!iterator.hasNext()) iterator = players.iterator();
         current = iterator.next();
     }

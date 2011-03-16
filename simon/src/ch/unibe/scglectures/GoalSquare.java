@@ -6,7 +6,7 @@ package ch.unibe.scglectures;
  * @author Adrian Kuhn, 2007 
  *
  */
-public class GoalSquare extends Square {
+public class GoalSquare extends Square implements IGoalSquare {
 
     /** Creates a new square and establishes the invariant.
      * 
@@ -16,7 +16,7 @@ public class GoalSquare extends Square {
     }
     
     @Override
-    public int countOpponents(Stone stone) {
+    public int countOpponents(IStone stone) {
         return NONE;
     }
 
@@ -27,23 +27,23 @@ public class GoalSquare extends Square {
     }
     
     @Override
-    public int indexOf(Stone stone) {
+    public int indexOf(IStone stone) {
         return this.contains(stone) ? 0 : NONE;
     }
 
     @Override
-    protected boolean invariantOfLinks() {
+	public boolean invariantOfLinks() {
         return true;
     }
 
     @Override
-    protected boolean invariantOfOccupants() {
-        for (Stone each: occupants()) if (each.location() != this) return false;
+	public boolean invariantOfOccupants() {
+        for (IStone each: occupants()) if (each.location() != this) return false;
         return true;
     }
 
     @Override
-    public Square next(int steps, Color color) {
+    public ISquare next(int steps, Color color) {
         assert invariantOfLinks();
         assert steps == 0;
         return this;

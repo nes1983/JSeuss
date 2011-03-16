@@ -14,7 +14,7 @@ public enum Color {
         return values()[(this.ordinal() + 1) % values().length];
     }
 
-    public static int length() {
+    public int length() {
         return values().length;
     }
 

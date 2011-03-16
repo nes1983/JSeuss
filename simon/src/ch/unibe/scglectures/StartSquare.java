@@ -6,7 +6,7 @@ package ch.unibe.scglectures;
  * @author Adrian Kuhn, 2007
  *
  */
-public class StartSquare extends Square {
+public class StartSquare extends Square implements IStartSquare {
 
     public static final int FIRST_STEP = 5;
 
@@ -17,7 +17,7 @@ public class StartSquare extends Square {
     }
 
     @Override
-    public Square next(int steps, Color color) {
+    public ISquare next(int steps, Color color) {
         assert invariantOfLinks();
         assert steps == FIRST_STEP;
         return next();

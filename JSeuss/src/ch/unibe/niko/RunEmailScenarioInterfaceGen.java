@@ -1,6 +1,7 @@
-package ch.unibnf.scg.jseuss.core.javaassist.guice.test;
+package ch.unibe.niko;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
@@ -11,15 +12,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.unibe.niko.GermanSpellChecker;
 import ch.unibnf.scg.jseuss.core.javaassist.guice.JavaInterfaceGenerator;
 
-public class JavaInterfaceGeneratorTester {
+public class RunEmailScenarioInterfaceGen {
 	Class<?> localVarClass;
 
 	@Before
 	public void setUp() throws Exception {
-		localVarClass = GermanSpellChecker.class;
+		localVarClass = FrenchSpellChecker.class;
 	}
 
 	@After
@@ -31,7 +31,7 @@ public class JavaInterfaceGeneratorTester {
 		if (localVarClass != null) {
 			Class<?> theInterface = JavaInterfaceGenerator
 					.generate(localVarClass,
-							"generated.guice.SpellCheckerInterface");
+							"generated.guice.I" + localVarClass.getSimpleName());
 			assertTrue(theInterface != null);
 		} else {
 			fail("Please initialize localVarClass in the Setup() method.");

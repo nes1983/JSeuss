@@ -1,11 +1,15 @@
 package ch.unibnf.scg.jseuss.core.javaassist.guice;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+
+import javassist.CannotCompileException;
+import javassist.NotFoundException;
 
 public class TheGuiceFactory {
 
@@ -32,10 +36,10 @@ public class TheGuiceFactory {
 	}
 
 	public Class<?> makeJavaInterface(Class<?> concreteClass,
-			String interfaceName) {
+			String interfaceName, boolean createJar) throws CannotCompileException, NotFoundException, IOException {
 		String interfaceFullName = basePkg + interfaceName;
 		Class<?> theInterface = JavaInterfaceGenerator.generate(concreteClass,
-				interfaceFullName, createJar);
+				interfaceFullName);
 		System.out.println("generated: " + theInterface.getName());
 		return theInterface;
 	}

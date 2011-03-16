@@ -1,6 +1,5 @@
 package ch.unibnf.scg.jseuss.core.javaassist.guice.test;
 
-import generated.guice.SpellCheckerBinder;
 import generated.guice.SpellCheckerInterface;
 
 import java.io.IOException;
@@ -14,14 +13,13 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import ch.unibe.niko.EmailSender;
+import ch.unibe.niko.GermanSpellChecker;
 import ch.unibnf.scg.jseuss.core.javaassist.guice.ClassDetails;
 import ch.unibnf.scg.jseuss.core.javaassist.guice.GuiceBinderGenerator;
 import ch.unibnf.scg.jseuss.core.javaassist.guice.GuiceProviderGenerator;
 import ch.unibnf.scg.jseuss.core.javaassist.guice.ContainerClassHandler;
 import ch.unibnf.scg.jseuss.core.javaassist.guice.JavaInterfaceGenerator;
-import ch.unibnf.scg.sample.emailservice.EmailSender;
-import ch.unibnf.scg.sample.spellCheck.FrenchSpellChecker;
-import ch.unibnf.scg.sample.spellCheck.GermanSpellChecker;
 
 public class ContainerClassHandlerTester {
 

@@ -5,6 +5,8 @@ package ch.unibnf.scg.jseuss.core.javaassist.generic.test;
 
 import static org.junit.Assert.*;
 
+import generated.guice.SpellCheckerInterface;
+
 import java.io.IOException;
 
 import javassist.CannotCompileException;
@@ -13,10 +15,10 @@ import javassist.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 
+import ch.unibe.niko.EmailSender;
+import ch.unibe.niko.FrenchSpellChecker;
+import ch.unibe.niko.GermanSpellChecker;
 import ch.unibnf.scg.jseuss.core.javaassist.generic.JSeuss_Javaassist;
-import ch.unibnf.scg.sample.emailservice.EmailSender;
-import ch.unibnf.scg.sample.spellCheck.FrenchSpellChecker;
-import ch.unibnf.scg.sample.spellCheck.GermanSpellChecker;
 
 /**
  * @author TGDMOAH1

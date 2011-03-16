@@ -10,9 +10,9 @@ import org.junit.Test;
 
 public class BranchSquareTest {
 
-    private Square board;
-    private Stone red;
-    private Stone green;
+    private ISquare board;
+    private IStone red;
+    private IStone green;
 
     @Before
     public void makeBoard() {
@@ -25,7 +25,7 @@ public class BranchSquareTest {
     public void moveRed() {
         red = board.makeStone(RED);
         red.move(5);
-        BranchSquare branch = (BranchSquare) board.next().next().next();
+        IBranchSquare branch = (IBranchSquare) board.next().next().next();
         assertEquals(red.location(), branch.branch().next());
     }
 
@@ -33,7 +33,7 @@ public class BranchSquareTest {
     public void moveGreen() {
         green = board.makeStone(GREEN);
         green.move(5);
-        BranchSquare branch = (BranchSquare) board.next().next().next();
+        IBranchSquare branch = (IBranchSquare) board.next().next().next();
         assertEquals(green.location(), branch.next().next());
     }
 

@@ -3,11 +3,23 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="asm/asm-3.3-src/src"/>
 	<classpathentry kind="src" path="javaassist/src/main"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="codemodel-2.3.jar"/>
 	<classpathentry kind="lib" path="SpellCheckerInterface.jar"/>
 	<classpathentry kind="lib" path="guice-2.0.jar"/>
 	<classpathentry kind="lib" path="tools.jar"/>
+	<classpathentry kind="lib" path="aopalliance.jar"/>
+	<classpathentry kind="lib" path="asm-all-3.3.jar"/>
+	<classpathentry kind="lib" path="guice-assistedinject-2.0.jar"/>
+	<classpathentry kind="lib" path="guice-jmx-2.0.jar"/>
+	<classpathentry kind="lib" path="guice-jndi-2.0.jar"/>
+	<classpathentry kind="lib" path="guice-multibindings-2.0.jar"/>
+	<classpathentry kind="lib" path="guice-servlet-2.0.jar"/>
+	<classpathentry kind="lib" path="guice-spring-2.0.jar"/>
+	<classpathentry kind="lib" path="guice-struts2-plugin-2.0.jar"/>
+	<classpathentry kind="lib" path="guice-throwingproviders-2.0.jar"/>
+	<classpathentry kind="lib" path="javassist.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="output"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

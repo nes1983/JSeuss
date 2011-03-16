@@ -1,5 +1,9 @@
 package ch.unibe.scglectures;
 
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+
+import ch.unibe.util.ILength;
 import ch.unibe.util.Length;
 
 /**
@@ -50,39 +54,57 @@ import ch.unibe.util.Length;
  * @author Adrian Kuhn, 2009
  * 
  */
-public class SquareGrid {
-
-	private Square[][] grid;
+public class SquareGrid implements ISquareGrid {
+	
+	 @Inject ILength length;
+	
+	// TODO was tun? Turtle braucht genau dieses grid auch
+	private ISquare[][] grid;
+	@Inject
+	private Provider<ITurtle> turtleProvider;
+	@Inject
+	private Provider<StringBuilder> stringBuilderProvider;
 
 	public SquareGrid(int rows, int columns) {
+		// TODO new provider
 		this.grid = new Square[rows][columns];
 	}
 
-	public Square at(int row, int column) {
+	public SquareGrid() {
+	}
+	public void setRowsAndColumns(int rows, int columns) {
+		// TODO new provider
+		this.grid = new Square[rows][columns];
+	}
+
+	public ISquare at(int row, int column) {
 		return grid[row][column];
 	}
 
-	public Turtle getTurtle(int row, int column, Heading heading, Square next) {
-		return new Turtle(row, column, heading, next);
+	public ITurtle getTurtle(int row, int column, Heading heading, ISquare next) {
+		ITurtle t = turtleProvider.get();
+		t.setRowAndColumnAndHeadingAndNext(row, column, heading, next);
+		return t;
 	}
 	
 	@Override
 	public String toString() {
-		StringBuilder buf = new StringBuilder();
+		StringBuilder buf = stringBuilderProvider.get();;
 		for (int row = 0; row < grid.length; row++) printRow(grid[row], buf);
 		return buf.toString();
 	}
 
-	private void printRow(Square[] row, StringBuilder buf) {
+	public void printRow(ISquare[] row, StringBuilder buf) {
 		for (int column = 0; column < row.length; column++) printCell(row[column], buf);
 		buf.append('\n');
 	}
 
-	private void printCell(Square square, StringBuilder buf) {
+	public void printCell(ISquare square, StringBuilder buf) {
 		if (square == null) { buf.append("    "); return; }
-		int size = Length.of(square.occupants());
+		// TODO static access
+		int size = length.of(square.occupants());
 		buf.append("[");
-		buf.append(size > 0 ? square.anyStone().color.toString().charAt(0) : ' ');
+		buf.append(size > 0 ? square.anyStone().getColor().toString().charAt(0) : ' ');
 		buf.append(size > 1 ? (char) ('0' + size) : ' ');
 		buf.append(']');
 	}
@@ -105,59 +127,6 @@ public class SquareGrid {
 
 		public Heading right() {
 			return values()[(this.ordinal() + values().length - 1) % values().length];
-		}
-
-	}
-
-	public class Turtle {
-
-		private Heading heading;
-		private int column;
-		private int row;
-		private Square next;
-		private Turtle branch;
-
-		private Turtle(int row, int column, Heading heading, Square next) {
-			this.row = row;
-			this.column = column;
-			this.heading = heading;
-			this.next = next;
-		}
-
-		public Turtle branchHere() {
-			assert branch == null;
-			branch = new Turtle(row, column, heading, ((BranchSquare) next).branch());
-			return this;
-		}
-
-		public Turtle gotoBranch() {
-			assert branch != null;
-			return branch;
-		}
-
-		public Turtle move(int times) {
-			for (int i = 0; i < times; i++) {
-				grid[row][column] = next;
-				next = next.next();
-				skip();
-			}
-			return this;
-		}
-
-		public Turtle skip() {
-			row += heading.rows;
-			column += heading.columns;
-			return this;
-		}
-
-		public Turtle turnLeft() {
-			heading = heading.left();
-			return this;
-		}
-
-		public Turtle turnRight() {
-			heading = heading.right();
-			return this;
 		}
 
 	}

@@ -4,6 +4,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+
 /** Creates lists of linked squares.
  *<P>
  * This class implements a <i>fluent interface</i>.
@@ -40,70 +43,80 @@ import java.util.List;
  * 
  * 
  */
-public class SquareBuilder {
+public class SquareBuilder implements ISquareBuilder {
 
-    private Square current, origin, branch;
-    private GoalSquare goal = new GoalSquare();
-    private List<StartSquare> starts = makeStartSquares();
+    private ISquare current, origin, branch;
+    @Inject
+    private IGoalSquare goal;
+    private List<IStartSquare> starts = makeStartSquares();
+    @Inject
+    private Provider<IBranchSquare> branchSquareProvider;
+    @Inject
+	private Provider<List<IStartSquare>> listStartSquareProvider;
+    @Inject
+	private Provider<IStartSquare> startSquareProvider;
     
     public SquareBuilder() {
         origin = current = new Square();
         branch = null;
     }
 
-    private void add(Square square) {
+    public void add(ISquare square) {
         current = current.add(square);
     }
 
-    public SquareBuilder branch(Color color) {
+    public ISquareBuilder branch(Color color) {
         assert branch == null;
-        add(branch = new BranchSquare(color));
+        IBranchSquare bs = branchSquareProvider.get();
+        bs.setColor(color);
+        add(branch = bs);
         return this;
     }
 
-    public SquareBuilder closeRing() {
+    public ISquareBuilder closeRing() {
         this.add(getFirst());
         return this;
     }
 
-    public SquareBuilder endOfBranch() {
+    public ISquareBuilder endOfBranch() {
         assert branch != null;
         current = branch;
         branch = null;
         return this;
     }
 
-    public Square getFirst() {
+    public ISquare getFirst() {
         return origin.next();
     }
     
-    public List<StartSquare> getStartSquares() {
+    public List<IStartSquare> getStartSquares() {
         return Collections.unmodifiableList(starts);
     }
 
-    public StartSquare getStartOf(Color color) {
+    public IStartSquare getStartOf(Color color) {
         return starts.get(color.ordinal());
     }
 
-    public SquareBuilder goal() {
+    public ISquareBuilder goal() {
         this.add(goal);
         return this;
     }
   
-    public SquareBuilder squares(int times) {
+    public ISquareBuilder squares(int times) {
         for (int n = 0; n < times; n++) add(new Square());
         return this;
     }
 
-    public SquareBuilder startHere(Color color) {
+    public ISquareBuilder startHere(Color color) {
         starts.get(color.ordinal()).add(current);
         return this;
     }
 
-    private static List<StartSquare> makeStartSquares() {
-        List<StartSquare> starts = new LinkedList<StartSquare>();
+    // TODO was static
+    public List<IStartSquare> makeStartSquares() {
+        List<IStartSquare> starts = listStartSquareProvider.get();
         for (Color color: Color.values()) {
-            StartSquare start = new StartSquare();
+            IStartSquare start = startSquareProvider.get();
             for (int n = 0; n < 4; n++) start.makeStone(color);
             starts.add(start);
         }

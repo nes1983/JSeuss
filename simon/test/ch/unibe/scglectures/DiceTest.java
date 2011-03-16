@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class DiceTest {
 
-    private Dice dice = new Dice();
+    private IDice dice = new Dice();
     
     @Test
     public void rollsAtLeastOne() {

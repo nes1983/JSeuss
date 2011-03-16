@@ -4,6 +4,9 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+
 
 /**
  * Each square is a cell in a linked list, holding zero or more stones.
@@ -24,12 +27,16 @@ import java.util.NoSuchElementException;
  *<P>
  * @author Adrian Kuhn, 2007-2009  
  */
-public class Square {
+public class Square implements ISquare {
 
 	public static final int NONE = -1;
 	
-    private Square next;
-	private Collection<Stone> occupants;
+    private ISquare next;
+	private Collection<IStone> occupants;
+    @Inject
+    private Provider<Collection<IStone>> linkedListStoneProvider;
+    @Inject
+    private Provider<IStone> stoneProvider;
 
 	/** Creates a new square, but does <em>not</em> establish the invariant!
      * The link to the next square remains unset.
@@ -38,7 +45,7 @@ public class Square {
      * @see #add(Square)
      */
 	public Square() {
-	    this.occupants = new LinkedList<Stone>();
+	    this.occupants = linkedListStoneProvider.get();
 	}	
 	
     /** Links this square to the next square. Establishes the invariant.
@@ -46,7 +53,7 @@ public class Square {
 	 * @throws AssertionError when called more than once.
 	 * 
 	 */
-	protected Square add(Square next) {
+	public ISquare add(ISquare next) {
 	    assert this.next == null;
 	    return this.next = next;
 	}
@@ -60,7 +67,7 @@ public class Square {
      * @throws AssertionError if the link invariant is not established. 
      * @throws AssertionError if the given stone is not on this square. 
 	 */
-    public void advance(Stone stone, Square target) {
+    public void advance(IStone stone, ISquare target) {
         assert invariantOfLinks();
         if (this == target) return;
         assert target != null;
@@ -74,7 +81,7 @@ public class Square {
      * 
      * @throws NoSuchElementException if there are no stones on this square.
      */
-    public Stone anyStone() {
+    public IStone anyStone() {
         return this.occupants().iterator().next();
     }
 	
@@ -83,20 +90,20 @@ public class Square {
 	 * This class disregards the given color, but subclass {@link BranchSquare} does not! 
 	 * 
 	 */
-    protected Square chooseNext(Color color) {
+    public ISquare chooseNext(Color color) {
         return next();
     }
 	
-	public boolean contains(Stone stone) {
+	public boolean contains(IStone stone) {
         return occupants.contains(stone);
     }
 
 	/** Returns the number of occupants that are <em>not</em> of same color as given stone.
      * 
      */
-    public int countOpponents(Stone stone) {
+    public int countOpponents(IStone stone) {
         if (occupants.isEmpty()) return NONE;
-        if (anyStone().color == stone.color) return NONE;
+        if (anyStone().getColor() == stone.getColor()) return NONE;
         return occupants.size();
     }
     
@@ -118,33 +125,35 @@ public class Square {
      *<P>  
      * @return {@link Square#NONE} if given stone is not found.
      */
-    public int indexOf(Stone stone) {
+    public int indexOf(IStone stone) {
         if (this.contains(stone)) return 0;
-        int index = chooseNext(stone.color).indexOf(stone);
+        int index = chooseNext(stone.getColor()).indexOf(stone);
         return index == NONE ? NONE : index + 1;
     }
     
-    protected boolean invariantOfLinks() {
+    public boolean invariantOfLinks() {
         return next != null;
     }
     
-    protected boolean invariantOfOccupants() {
+    public boolean invariantOfOccupants() {
         if (occupants.isEmpty()) return true;
-        Color sameColor = anyStone().color;
-        for (Stone each: occupants) if (each.color != sameColor) return false;
-        for (Stone each: occupants) if (each.location() != this) return false;
+        Color sameColor = anyStone().getColor();
+        for (IStone each: occupants) if (each.getColor() != sameColor) return false;
+        for (IStone each: occupants) if (each.location() != this) return false;
         return true;
     }
 
-    public Stone makeStone(Color color) {
-        assert occupants.isEmpty() || anyStone().color == color;
-        Stone stone = new Stone(this, color);
+    public IStone makeStone(Color color) {
+        assert occupants.isEmpty() || anyStone().getColor() == color;
+        IStone is = stoneProvider.get();
+        is.setStartAndColor(this, color);
+        IStone stone = is;
         occupants.add(stone);
         assert invariantOfOccupants();
         return stone;
     }
 
-    public Square next() {
+    public ISquare next() {
 	    return next;
 	}
     
@@ -157,17 +166,17 @@ public class Square {
      * @throws AssertionError if the link invariant is not established. 
      * @throws AssertionError if the stone cannot move (ie contract violation). 
      */
-	public Square next(int steps, Color color) {
+	public ISquare next(int steps, Color color) {
 	    assert invariantOfLinks();
 	    if (steps == 0) return this;
 	    return chooseNext(color).next(steps - 1, color);
 	}
     
-    public Iterable<Stone> occupants() {
+    public Iterable<IStone> occupants() {
         return occupants;
     }
 
-    private void put(Stone stone) {
+    public void put(IStone stone) {
         int opponents = countOpponents(stone);
         if (opponents == 1) anyStone().restart();
         occupants.add(stone);

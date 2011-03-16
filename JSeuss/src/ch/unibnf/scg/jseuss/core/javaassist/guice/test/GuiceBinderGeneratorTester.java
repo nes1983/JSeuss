@@ -2,7 +2,6 @@ package ch.unibnf.scg.jseuss.core.javaassist.guice.test;
 
 import static org.junit.Assert.*;
 import generated.guice.SpellCheckerInterface;
-import generated.guice.SpellCheckerProvider;
 
 import org.junit.After;
 import org.junit.Before;

@@ -1,9 +1,10 @@
 package ch.unibe.util;
 
 
-public class All {
+public class All implements IAll {
 
-    public static boolean notNull(Object... values) {
+	// TODO was static
+    public boolean notNull(Object... values) {
         for (Object each: values) if (each == null) return false;
         return true;
     }

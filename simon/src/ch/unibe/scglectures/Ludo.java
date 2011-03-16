@@ -4,34 +4,44 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
-import ch.unibe.scglectures.SquareGrid.Turtle;
 import static ch.unibe.scglectures.SquareGrid.Heading.*;
 
 
-public class Ludo extends Game {
+public class Ludo extends Game implements ILudo {
 
     private IDice dice;
-    private List<StartSquare> starts;
-    private Iterator<StartSquare> freeStarts;
-    private SquareGrid grid;
+    private List<IStartSquare> starts;
+    private Iterator<IStartSquare> freeStarts;
+    private ISquareGrid grid;
+    @Inject
+    private Provider<IPlayer> playerProvider;
+    @Inject
+	private Provider<ISquareBuilder> squareBuilderProvider;
+    @Inject
+	private Provider<ISquareGrid> squareGridProvider;
     
     @Inject
     public Ludo(IDice dice) {
     	this.dice = dice;
+    	// TODO static call
         this.starts = Ludo.makeBoard();
         this.freeStarts = starts.iterator();
+    	// TODO static call
         this.grid = Ludo.makeGrid(starts.iterator());
     }
     
-    public StartSquare getStartSquare(Color color) {
+    public IStartSquare getStartSquare(Color color) {
         return starts.get(color.ordinal());
     }
 
     @Override
-    protected Player makePlayer() {
+	public IPlayer makePlayer() {
         assert freeStarts.hasNext();
-        return new Player(freeStarts.next());
+        IPlayer p = playerProvider.get();
+        p.setStartSquare(freeStarts.next());
+        return p;
     }
 
     public void nextTurn(int steps) {
@@ -57,8 +67,9 @@ public class Ludo extends Game {
         return grid.toString();
     }
     
-    public static List<StartSquare> makeBoard() {
-        SquareBuilder board = new SquareBuilder();
+    // TODO was static method
+    public List<IStartSquare> makeBoard() {
+        ISquareBuilder board = squareBuilderProvider.get();
         for (Color color: Color.values()) {
             board.branch(color).squares(5).goal().endOfBranch();
             board.squares(2).startHere(color).squares(10);
@@ -66,8 +77,10 @@ public class Ludo extends Game {
         return board.closeRing().getStartSquares();
     }
     
-    public static SquareGrid makeGrid(Iterator<StartSquare> starts) {
-    	SquareGrid grid = new SquareGrid(15,15);
+    // TODO was static method
+    public ISquareGrid makeGrid(Iterator<IStartSquare> starts) {
+    	ISquareGrid grid = squareGridProvider.get();
+    	grid.setRowsAndColumns(15,15);
     	quarter(grid.getTurtle(5, 1, DOWN, starts.next()));
     	quarter(grid.getTurtle(1, 9, LEFT, starts.next()));
     	quarter(grid.getTurtle(9, 13, UP, starts.next()));
@@ -75,7 +88,8 @@ public class Ludo extends Game {
     	return grid;
     }
     
-    private static void quarter(Turtle turtle) {
+    // TODO was static method
+    public void quarter(ITurtle turtle) {
         turtle
         	.move(1)
         	.turnLeft()

@@ -1,7 +1,9 @@
 package ch.unibnf.scg.jseuss.core.javaassist.guice;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 
+import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -11,11 +13,12 @@ import ch.unibnf.scg.jseuss.utils.JSeussUtils;
 
 public class JavaInterfaceGenerator {
 
+	private static final String OUTPUT_DIR = "./output/";
 	private static ClassPool classPool = ClassPool.getDefault();
 
 	private static CtClass createCtInterface(String interfaceFullName) {
 		CtClass ctInterface = classPool.makeInterface(interfaceFullName);
-		ctInterface.setModifiers(Modifier.PUBLIC + Modifier.INTERFACE);
+		ctInterface.setModifiers(Modifier.PUBLIC | Modifier.INTERFACE);
 		return ctInterface;
 	}
 
@@ -36,19 +39,14 @@ public class JavaInterfaceGenerator {
 
 	private static CtMethod generateInterfaceMethod(CtClass ctDeclaring,
 			Method method) throws NotFoundException {
-		// construct the return type
 		CtClass ctReturn = getMethodReturnType(method);
 
-		// construct method parameters
 		CtClass[] ctParams = getMethodParameters(method);
 
-		// construct throwables
 		CtClass[] ctThrowables = getMethodExceptions(method);
 
-		// construct the ctMethod
 		CtMethod ctMethod = createMethod(method.getName(), ctReturn,
-				ctDeclaring, ctParams, ctThrowables, Modifier.PUBLIC
-						+ Modifier.ABSTRACT);
+				ctDeclaring, ctParams, ctThrowables, method.getModifiers() | Modifier.ABSTRACT);
 		return ctMethod;
 	}
 
@@ -63,36 +61,39 @@ public class JavaInterfaceGenerator {
 	 * @param inputClass
 	 * @param interfaceFullName
 	 * @param createJar
+	 * @throws CannotCompileException 
+	 * @throws NotFoundException 
+	 * @throws IOException 
 	 * @throws ClassNotFoundException
 	 */
 	public static Class<?> generate(Class<?> inputClass,
-			String interfaceFullName, boolean createJar) {
+			String interfaceFullName)
+			throws CannotCompileException, NotFoundException, IOException {
 		Class<?> generated = null;
-		try {
-			CtClass ctInterface = createCtInterface(interfaceFullName);
 
-			Method[] publicMethods = inputClass.getDeclaredMethods();
-			for (Method method : publicMethods) {
-				CtMethod ctMethod = generateInterfaceMethod(ctInterface, method);
+		CtClass ctInterface = createCtInterface(interfaceFullName);
 
-				ctInterface.addMethod(ctMethod);
-			}
+		Method[] methods = inputClass.getDeclaredMethods();
+		for (Method method : methods) {
+			CtMethod ctMethod = generateInterfaceMethod(ctInterface, method);
 
-			ctInterface.writeFile("./output/");
-
-			if (createJar) {
-				JSeussUtils.createJarArchive(interfaceFullName);
-				// JSeussUtils.cleanupBytecode(interfaceFullName);
-			}
-			// generated = true;
-			ctInterface.rebuildClassFile();
-			generated = ctInterface.toClass();
-		} catch (Exception e) {
-			e.printStackTrace();
-			// generated = false;
-			generated = null;
+			ctInterface.addMethod(ctMethod);
 		}
+
+		ctInterface.writeFile(OUTPUT_DIR);
+
+		ctInterface.rebuildClassFile();
+		generated = ctInterface.toClass();
+
 		return generated;
+	}
+	
+	public static Class<?> generateJar(Class<?> inputClass,
+			String interfaceFullName)
+			throws CannotCompileException, NotFoundException, IOException {
+		 Class<?> tmp = generate(inputClass, interfaceFullName);
+		 JSeussUtils.createJarArchive(interfaceFullName);
+		 return tmp;
 	}
 
 	private static CtClass[] getMethodExceptions(Method method)

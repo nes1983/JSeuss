@@ -1,5 +1,8 @@
 package ch.unibe.scglectures;
 
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+
 
 /**
  * Stones of a given color are redirected to the stairways to heaven.
@@ -7,22 +10,26 @@ package ch.unibe.scglectures;
  * @author Adrian Kuhn, 2007
  *
  */
-public class BranchSquare extends Square {
+public class BranchSquare extends Square implements IBranchSquare {
 
-    private Square branch;
-    public final Color color;
+    private ISquare branch;
+    public Color color;
     
+    @Inject
     /** Creates a new square, but does <em>not</em> establish the invariant! 
      * Branch and next square remain unset.
      * Please call <tt>#add</tt> twice to establish the invariant.
      * 
      * @see #add(Square)
      */
-    public BranchSquare(Color color) {
+    public BranchSquare(@Assisted Color color) {
         this.color = color;
     }
 
-    /** First adds the branch, then the next square. Establishes the invariant.
+    public BranchSquare() {
+	}
+
+	/** First adds the branch, then the next square. Establishes the invariant.
      *<P>
      * To establish the invariant, this method must be called twice. <em>Caution:</em> Please beware that the behavior
      * of this method changes between the first and the second method call. The first call links the receiver to the
@@ -32,11 +39,11 @@ public class BranchSquare extends Square {
      * @throws AssertionError when called more than twice.
      */
     @Override
-    protected Square add(Square next) {
+	public ISquare add(ISquare next) {
         return branch == null ? this.branch = next : super.add(next);
     }
     
-    public Square branch() {
+    public ISquare branch() {
         return branch;
     }
 
@@ -44,7 +51,7 @@ public class BranchSquare extends Square {
       *
       */
     @Override
-    protected Square chooseNext(Color color) {
+	public ISquare chooseNext(Color color) {
         return this.color == color ? branch() : next();
     }
     
@@ -53,8 +60,13 @@ public class BranchSquare extends Square {
     }
 
     @Override
-    protected boolean invariantOfLinks() {
+	public boolean invariantOfLinks() {
         return branch != null && super.invariantOfLinks();
     }
+
+	@Override
+	public void setColor(Color color) {
+		this.color = color;
+	}
 
 }

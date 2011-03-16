@@ -1,5 +1,7 @@
 package ch.unibe.scglectures;
 
+import com.google.inject.Inject;
+
 /** Stones move from one square to the next.
  *<P> 
  * @see {@link Square#makeStone(Color)}
@@ -7,15 +9,27 @@ package ch.unibe.scglectures;
  * @author Adrian Kuhn, 2007
  *
  */
-public class Stone {
+public class Stone implements IStone {
 
-    public final Color color;
-    private Square location, start;
+    private Color color;
+    private ISquare location, start;
     
-    
-    public Stone(Square start, Color color) {
+    @Inject
+    public Stone(ISquare start, Color color) {
         this.location = this.start = start;
         this.color = color;
+    }
+    
+    public Stone() {
+	}
+	@Override
+	public void setStartAndColor(ISquare start, Color color) {
+		this.location = this.start = start;
+        this.color = color;
+	}
+
+	public Color getColor() {
+    	return this.color;
     }
     
     public boolean atGoal() {
@@ -30,11 +44,11 @@ public class Stone {
         return location.hasNext(steps, this.color);
     }
     
-    public Square location() {
+    public ISquare location() {
         return location;
     }
 
-    private Square lookahead(int steps) {
+    public ISquare lookahead(int steps) {
         return location.next(steps, this.color);
     }    
     
