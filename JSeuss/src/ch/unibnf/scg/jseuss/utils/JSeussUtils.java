@@ -3,18 +3,12 @@ package ch.unibnf.scg.jseuss.utils;
 import java.io.File;
 import java.io.IOException;
 
-import ch.unibnf.scg.jseuss.core.javaassist.guice.ClassDetails;
-
-import javassist.ByteArrayClassPath;
 import javassist.CannotCompileException;
-import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.NotFoundException;
 
 public class JSeussUtils {
 
-	public static ClassDetails writeCtClass(CtClass ctClass) {
-		ClassDetails details = new ClassDetails();
+	public static Object writeCtClass(CtClass ctClass) {
 		try {
 			String baseDir = "output/";
 			String filepath = ctClass.getName().replace(".", "/");
@@ -46,19 +40,13 @@ public class JSeussUtils {
 				// e.printStackTrace();
 			}
 
-			details.setTheClass(theClass);
-			details.setTheClassBytes(theBytes);
-			details.setTheClassFile(theFile);
-
-			details.setDone(true);
-
 			System.out.println("generated: " + ctClass.getName());
 		} catch (CannotCompileException e) {
 			throw new RuntimeException(e);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		return details;
+		return null;
 	}
 
 	/**
@@ -170,7 +158,7 @@ public class JSeussUtils {
 								+ process.exitValue() + ", waitValue = " + wait);
 			}
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
 		// System.out.println(outputJar.getAbsolutePath() + " file created in: "
