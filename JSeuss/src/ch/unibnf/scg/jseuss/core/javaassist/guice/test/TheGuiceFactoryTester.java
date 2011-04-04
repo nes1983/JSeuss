@@ -12,9 +12,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.unibe.niko.EmailSender;
-import ch.unibe.niko.FrenchSpellChecker;
-import ch.unibe.niko.GermanSpellChecker;
+import usecase.EmailSender;
+import usecase.FrenchSpellChecker;
+import usecase.GermanSpellChecker;
+
 import ch.unibnf.scg.jseuss.core.javaassist.guice.TheGuiceFactory;
 
 public class TheGuiceFactoryTester {

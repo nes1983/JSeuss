@@ -434,6 +434,11 @@ public class CtField extends CtMember {
         fieldInfo.addAttribute(new AttributeInfo(fieldInfo.getConstPool(),
                                                  name, data));
     }
+    
+    public void addAttribute(AttributeInfo ai) {
+        declaringClass.checkModify();
+        fieldInfo.addAttribute(ai);
+    }
 
     // inner classes
 

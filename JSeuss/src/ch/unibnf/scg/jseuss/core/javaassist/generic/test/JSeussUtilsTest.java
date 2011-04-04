@@ -15,10 +15,11 @@ import javassist.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.unibe.niko.EmailSender;
-import ch.unibe.niko.FrenchSpellChecker;
-import ch.unibe.niko.GermanSpellChecker;
-import ch.unibnf.scg.jseuss.core.javaassist.generic.JSeuss_Javaassist;
+import usecase.EmailSender;
+import usecase.FrenchSpellChecker;
+import usecase.GermanSpellChecker;
+
+import ch.unibnf.scg.jseuss.core.javaassist.generic.JSeussJavaassist;
 
 /**
  * @author TGDMOAH1
@@ -45,8 +46,8 @@ public class JSeussUtilsTest {
 	public void testFactorizeJavaassistToGuice_Jar() {
 		boolean done = false;
 		try {
-			done = JSeuss_Javaassist.factorizeToGuice(containerClass,
-					localVarClass, interfaceClass, true);
+			JSeussJavaassist.factorizeToGuice(containerClass,
+					localVarClass, interfaceClass);
 		} catch (NotFoundException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
@@ -64,7 +65,7 @@ public class JSeussUtilsTest {
 		String factoryMethod = "createInstance";
 		boolean done = false;
 		try {
-			done = JSeuss_Javaassist.factorizeLocalVariable(containerClass,
+			done = JSeussJavaassist.factorizeLocalVariable(containerClass,
 					localVarClass, newVarClass, factoryClass, factoryMethod,
 					true);
 		} catch (NotFoundException e) {

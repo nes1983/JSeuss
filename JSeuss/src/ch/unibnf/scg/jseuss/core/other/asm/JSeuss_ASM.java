@@ -31,7 +31,7 @@ public class JSeuss_ASM implements Opcodes {
 		String[] exceptionNames = extractMethodExceptions(amethod
 				.getExceptionTypes());
 
-		MethodNode method = new MethodNode(ACC_PUBLIC + ACC_ABSTRACT,
+		MethodNode method = new MethodNode(ACC_PUBLIC | ACC_ABSTRACT,
 				amethod.getName(), Type.getMethodDescriptor(amethod), null,
 				exceptionNames);
 

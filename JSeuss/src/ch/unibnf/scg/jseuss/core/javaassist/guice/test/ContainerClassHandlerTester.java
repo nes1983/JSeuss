@@ -11,10 +11,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import usecase.EmailSender;
+import usecase.GermanSpellChecker;
+
 import static org.junit.Assert.*;
 
-import ch.unibe.niko.EmailSender;
-import ch.unibe.niko.GermanSpellChecker;
 import ch.unibnf.scg.jseuss.core.javaassist.guice.ClassDetails;
 import ch.unibnf.scg.jseuss.core.javaassist.guice.GuiceBinderGenerator;
 import ch.unibnf.scg.jseuss.core.javaassist.guice.GuiceProviderGenerator;
