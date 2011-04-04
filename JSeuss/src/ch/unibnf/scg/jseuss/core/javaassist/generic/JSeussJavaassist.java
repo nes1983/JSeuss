@@ -31,6 +31,7 @@ import javassist.bytecode.annotation.Annotation;
 import javassist.bytecode.annotation.AnnotationsWriter;
 import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
+import ch.unibe.jseuss.core.JSeussByteChanger;
 import ch.unibnf.scg.jseuss.utils.JSeussUtils;
 
 import com.google.inject.Provider;
@@ -122,11 +123,7 @@ public class JSeussJavaassist {
 				throws CannotCompileException {
 					System.out.println("meth. name: " + methodCall.getMethodName());
 					System.out.println("meth. class name: " + methodCall.getClassName());
-					try {
-						methodCall.transformToJSeuss();
-					} catch (BadBytecode e) {
-						throw new RuntimeException(e);
-					}
+					methodCall.changeBytes(new JSeussByteChanger());
 				}
 			});
 			//SV

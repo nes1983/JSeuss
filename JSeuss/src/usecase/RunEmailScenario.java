@@ -31,7 +31,7 @@ public class RunEmailScenario {
 			}
 		});
 		
-		EmailSender es = i.getInstance(EmailSender.class);
+//		EmailSender es = i.getInstance(EmailSender.class);
 //		assertNotNull(es.ifrenchspellcheckerProvider);
 //		Email e = new Email();
 //		
@@ -39,7 +39,7 @@ public class RunEmailScenario {
 //		
 //		es.sendEmail(e);
 //		assertEquals("German", e.language );
-//		
+		
 	}
 	
 	@Test

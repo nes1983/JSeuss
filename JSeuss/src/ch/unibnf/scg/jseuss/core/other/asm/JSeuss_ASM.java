@@ -111,11 +111,6 @@ public class JSeuss_ASM implements Opcodes {
 			// createJar);
 		}
 
-		if (createJar) {
-			JSeussUtils.createJarArchive(interfaceFullName);
-			// JSeussUtils.cleanupBytecode(interfaceFullName);
-		}
-
 		return generated;
 	}
 
