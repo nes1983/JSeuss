@@ -1,17 +1,14 @@
 package ch.unibnf.scg.jseuss.core.javaassist.generic;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.net.URL;
 
 import javassist.CannotCompileException;
-import javassist.ClassMap;
 import javassist.ClassPool;
 import javassist.CodeConverter;
 import javassist.CtClass;
@@ -22,25 +19,182 @@ import javassist.CtNewMethod;
 import javassist.Modifier;
 import javassist.NotFoundException;
 import javassist.bytecode.AnnotationsAttribute;
-import javassist.bytecode.AttributeInfo;
-import javassist.bytecode.BadBytecode;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.SignatureAttribute;
 import javassist.bytecode.annotation.Annotation;
-import javassist.bytecode.annotation.AnnotationsWriter;
 import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
-import ch.unibe.jseuss.core.JSeussByteChanger;
+import ch.unibnf.scg.jseuss.utils.JSeussConfig;
 import ch.unibnf.scg.jseuss.utils.JSeussUtils;
 
 import com.google.inject.Provider;
 
 public class JSeussJavaassist {
 
-	private static final String OUTPUT_DIR = "C:/cygwin/home/vs/students-ahmed-JSeuss/JSeuss/output/";
 	private static ClassPool classPool = ClassPool.getDefault();
+	
+	public static void guicify(CtClass target) throws NotFoundException, CannotCompileException {
+		
+		// for all methods declared in ctContainer
+		for (CtMethod method : target.getDeclaredMethods()) {
+			System.out.println("method: " + method.getName());
+			
+			//SV
+			System.out.println("sign: " + method.getSignature());
+			method.instrument(new ExprEditor() {
+				public void edit(MethodCall methodCall)
+				throws CannotCompileException {
+					String className = methodCall.getClassName();
+					if(!JSeussUtils.isInIgnoreList(className)) {
+						System.out.println("methodcall name: " + methodCall.getMethodName());
+						System.out.println("methodcall class name: " + methodCall.getClassName());
+						methodCall.changeBytes(new JSeussByteChanger()); //XXX ReEnable
+					}
+				}
+			});
+			//SV
+		}
+		
+		// for all constructors declared in ctContainer
+		for(CtConstructor constructor : target.getConstructors()) {
+			System.out.println("constructor: " + constructor.getName());
+			
+			// TODO include jseussbytechanger
+		}
+		
+		// replace the new expressions with Guice Provider get()
+		target.instrument(new NewGuiceExprEditor());
+	}
+	
+	/**
+	 * 
+	 * @param target
+	 * @param interfaceClass
+	 * @return the generated provider field (already attached to the target class!)
+	 * @throws CannotCompileException
+	 * @throws NotFoundException
+	 */
+	public static CtField addProviderField(CtClass target, CtClass interfaceClass) throws CannotCompileException, NotFoundException {
+		CtClass providerClass = classPool.getCtClass(Provider.class.getName());
+		String instanceVarName = JSeussUtils.firstLetterToLowerCase(interfaceClass.getSimpleName()) + "Provider";
+		CtField providerField;
+		
+		try {
+			providerField = target.getField(instanceVarName);
+		} catch (NotFoundException e) {
+			providerField = null;
+		}
+		
+		if(providerField != null){
+			if (providerField.getType().equals(providerClass)) {
+				throw new RuntimeException(
+						"instance variable with same name and [Guice type] exists, name: "
+								+ instanceVarName);
+			} else {
+				throw new RuntimeException( //XXX Eigene Exception
+						"instance variable with same name exists, name: "
+								+ instanceVarName);
+			}
+		}
+		
+		// no instance variables exist with above name, good
+		
+		providerField = new CtField(providerClass, instanceVarName, target);
+		// XXX add static modifier for static methods? --> does this hurt??
+		providerField.setModifiers(Modifier.PROTECTED);
+		
+		ConstPool constPool = target.getClassFile().getConstPool();
+		AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
+		Annotation a = new Annotation("com.google.inject.Inject", constPool);
+		attr.setAnnotation(a);
+		providerField.getFieldInfo().addAttribute(attr);
+		//XXX Second L might have to be an [ in case of providers that provide arrays.
+		SignatureAttribute sa = new SignatureAttribute(constPool, "Lcom/google/inject/Provider<L" + interfaceClass.getName().replace('.', '/') +";>;");
+		providerField.getFieldInfo().addAttribute(sa);
+		
+		target.addField(providerField);
+		return providerField;
+	}
 
+	@Deprecated
+	public static CtClass factorizeToGuice(CtClass containerClass, CtClass newInterfaceType) 
+		throws NotFoundException, ClassNotFoundException, CannotCompileException, IOException {
+		CtClass ctContainer = classPool.getCtClass(containerClass.getName());
+		CtClass ctNewInterfaceType = classPool.getCtClass(newInterfaceType.getName());
+		CtClass providerClass = classPool
+				.getCtClass(Provider.class.getName());
+
+		String instanceVarName = newInterfaceType.getSimpleName().toLowerCase()
+				+ "Provider";
+		CtField providerField;
+
+		try {
+			providerField = ctContainer.getField(instanceVarName);
+		} catch (NotFoundException e) {
+			providerField = null;
+		}
+		
+		if(providerField != null){
+			if (providerField.getType().equals(providerClass)) {
+				throw new RuntimeException(
+						"instance variable with same name and [Guice type] exists, name: "
+								+ instanceVarName);
+			} else {
+				throw new RuntimeException( //XXX Eigene Exception
+						"instance variable with same name exists, name: "
+								+ instanceVarName);
+			}
+		}
+		
+		// no instance variables exist with above name, good
+
+		providerField = new CtField(providerClass, instanceVarName,
+				ctContainer);
+		providerField.setModifiers(Modifier.PROTECTED);
+		ConstPool constPool = ctContainer.getClassFile().getConstPool();
+		AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
+		Annotation a = new Annotation("com.google.inject.Inject", constPool);
+		attr.setAnnotation(a);
+		providerField.getFieldInfo().addAttribute(attr);
+		//XXX Second L might have to be an [ in case of providers that provide arrays.
+		SignatureAttribute sa = new SignatureAttribute(constPool, "Lcom/google/inject/Provider<L" + newInterfaceType.getName().replace('.', '/') +";>;");
+		providerField.getFieldInfo().addAttribute(sa);
+		
+		ctContainer.addField(providerField);
+
+		// for all methods declared in ctContainer
+		for (CtMethod method : ctContainer.getDeclaredMethods()) {
+			System.out.println("method: " + method.getName());
+			
+			//SV
+			System.out.println("sign: " + method.getSignature());
+			method.instrument(new ExprEditor() {
+				public void edit(MethodCall methodCall)
+				throws CannotCompileException {
+					System.out.println("meth. name: " + methodCall.getMethodName());
+					System.out.println("meth. class name: " + methodCall.getClassName());
+					//methodCall.changeBytes(new JSeussByteChanger()); //XXX ReEnable
+				}
+			});
+			//SV
+			
+			// second replace the new expr with Guice provider get()
+			method.instrument(new NewGuiceExprEditor(ctNewInterfaceType, providerField));
+		}
+		
+		// for all constructors declared in ctContainer
+		for(CtConstructor constructor : ctContainer.getConstructors()) {
+			System.out.println("constructor: " + constructor.getName());
+			
+			// second replace the new expr with Guice provider get()
+			constructor.instrument(new NewGuiceExprEditor(ctNewInterfaceType, providerField));
+		}
+		
+		return ctContainer;
+	}
+	
+	@Deprecated
 	public static CtClass factorizeToGuice(Class<?> containerClass, Class<?> currentClassType, Class<?> newInterfaceType) 
 			throws NotFoundException, ClassNotFoundException, CannotCompileException, IOException {
 		
@@ -155,7 +309,7 @@ public class JSeussJavaassist {
 	
 	//	URL url = ClassLoader.getSystemClassLoader().getResource("usecase/EmailSender.class"); //XXX
 	//	File f = new File(url.getFile());
-		File f = new File(OUTPUT_DIR + ctClass.getName().replace('.', '/') + ".class");
+		File f = new File(JSeussConfig.OUTPUT_DIR + ctClass.getName().replace('.', '/') + ".class");
 		cf.write(new DataOutputStream(new FileOutputStream(f)));
 		
 //		if (createJar) {

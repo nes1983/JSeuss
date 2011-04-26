@@ -15,7 +15,6 @@
 
 package javassist.expr;
 
-import ch.unibe.jseuss.core.ByteChanger;
 import javassist.*;
 import javassist.bytecode.*;
 import javassist.compiler.*;

@@ -1,10 +1,5 @@
 package usecase;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import generated.guice.usecase.IFrenchSpellChecker;
-
 import java.io.IOException;
 
 import javassist.CannotCompileException;
@@ -27,11 +22,11 @@ public class RunEmailScenario {
 		Injector i = Guice.createInjector(new AbstractModule() {
 			@Override
 			protected void configure() {
-				bind(IFrenchSpellChecker.class).to(GermanSpellChecker.class);
+//				bind(IFrenchSpellChecker.class).to(GermanSpellChecker.class);
 			}
 		});
 		
-//		EmailSender es = i.getInstance(EmailSender.class);
+		EmailSender es = i.getInstance(EmailSender.class);
 //		assertNotNull(es.ifrenchspellcheckerProvider);
 //		Email e = new Email();
 //		
@@ -39,7 +34,7 @@ public class RunEmailScenario {
 //		
 //		es.sendEmail(e);
 //		assertEquals("German", e.language );
-		
+//		
 	}
 	
 	@Test

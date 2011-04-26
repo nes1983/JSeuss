@@ -7,6 +7,8 @@ import javassist.CannotCompileException;
 import javassist.CtClass;
 
 public class JSeussUtils {
+	
+	public static final String INTERFACE_PREFIX = "I";
 
 	public static Object writeCtClass(CtClass ctClass) {
 		try {
@@ -40,7 +42,7 @@ public class JSeussUtils {
 				// e.printStackTrace();
 			}
 
-			System.out.println("generated: " + ctClass.getName());
+			System.out.println("wrote output file: " + ctClass.getName());
 		} catch (CannotCompileException e) {
 			throw new RuntimeException(e);
 		} catch (IOException e) {
@@ -163,6 +165,51 @@ public class JSeussUtils {
 
 		// System.out.println(outputJar.getAbsolutePath() + " file created in: "
 		// + outputJar.getAbsolutePath());
+	}
+	
+	/**
+	 * example: ch.unibe.jseuss.Test turns to ch.unibe.jseuss.ITest
+	 * @param qualifiedClassName
+	 * @return the qualified interface name
+	 */
+	public static String getQualifiedInterfaceName(String qualifiedClassName) {
+		int lastIndexOfDot = qualifiedClassName.lastIndexOf(".");
+		String exprClassNamePrefix = qualifiedClassName;
+		if(lastIndexOfDot != -1)
+			exprClassNamePrefix = exprClassNamePrefix.substring(0, lastIndexOfDot);
+		String exprClassNamePostfix = "";
+		if(lastIndexOfDot != qualifiedClassName.length()) {
+			exprClassNamePostfix = "." + INTERFACE_PREFIX + qualifiedClassName.substring(lastIndexOfDot+1, qualifiedClassName.length());
+		} else {
+			exprClassNamePrefix = INTERFACE_PREFIX + exprClassNamePrefix;
+		}
+		
+		String result = exprClassNamePrefix + exprClassNamePostfix;
+		// XXX ?? Fix due to Javassist naming the main loading class with a dollar sign and a one behind "$1"
+		// result = result.replace("$1", "");
+		
+		return result;
+	}
+
+	/**
+	 * checks whether the className is in the PACKAGE_IGNORE_LIST
+	 * @param className the fully qualified class name
+	 * @return
+	 */
+	public static boolean isInIgnoreList(String className) {
+		for(String toIgnore : JSeussConfig.PACKAGE_IGNORE_LIST)
+			if(className.startsWith(toIgnore))
+				return true;
+		return false;
+	}
+
+	public static String firstLetterToLowerCase(String value) {
+		String result = value;
+		if(value.length() > 1)
+			result = value.substring(0, 1).toLowerCase() + value.substring(1, value.length());
+		else
+			result = value.toLowerCase();
+		return result;
 	}
 
 }
