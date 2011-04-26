@@ -1,0 +1,16 @@
+package obsolete;
+
+import usecase.Email;
+import usecase.IFrenchSpellChecker;
+
+public class EmailSenderWithInterface {
+	
+	public static void note() {
+		
+	}
+
+	public void sendEmail(Email email) {
+		IFrenchSpellChecker fsc = new FrenchSpellCheckerWithInterface();
+		fsc.check(email);
+	}
+}
