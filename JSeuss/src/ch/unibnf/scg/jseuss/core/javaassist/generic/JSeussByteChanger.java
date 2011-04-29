@@ -1,16 +1,13 @@
 package ch.unibnf.scg.jseuss.core.javaassist.generic;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
+import ch.unibnf.scg.jseuss.utils.JSeussConfig;
+import ch.unibnf.scg.jseuss.utils.JSeussUtils;
 import javassist.ByteChanger;
-import javassist.CannotCompileException;
 import javassist.bytecode.BadBytecode;
 import javassist.bytecode.CodeIterator;
 import javassist.bytecode.ConstPool;
-import javassist.expr.Expr;
 import javassist.bytecode.Opcode;
+import javassist.expr.Expr;
 
 /**
  * transforms the methodcall to jseuss compatible code
@@ -35,17 +32,17 @@ public class JSeussByteChanger implements ByteChanger {
         }
 
         int numberOfBytesForInvokeVirtualInstruction = 3;
-        int numberOfBytesForInvokeInterfaceInstruction = 5;
         int codeLength = iterator.getCodeLength();
-        System.out.println("codelength: " + codeLength + " | pos: " + pos);
+        System.out.println("BC codelength:\t" + codeLength + " | pos: " + pos);
 
         byte[] bytesAfterInvokeVirtual = new byte[codeLength - pos - numberOfBytesForInvokeVirtualInstruction];
         for(int i=0; i<bytesAfterInvokeVirtual.length; i++) {
         	bytesAfterInvokeVirtual[i] = (byte) iterator.byteAt(i+pos+numberOfBytesForInvokeVirtualInstruction);
         }
         
+        // ******* DEBUG INFO
         // code before
-        System.out.println("before changing: ");
+        System.out.println("BC before changing:\t");
         for(int i=pos; i<iterator.getCodeLength(); i++)
         	System.out.print(Integer.toHexString(iterator.byteAt(i)) + " [" + iterator.byteAt(i) + "] ");
         
@@ -53,41 +50,40 @@ public class JSeussByteChanger implements ByteChanger {
         for(int i=0; i < bytesAfterInvokeVirtual.length; i++)
         	System.out.print(Integer.toHexString(bytesAfterInvokeVirtual[i] & 0xFF) + " [" + (bytesAfterInvokeVirtual[i] & 0xFF) + "] ");
         System.out.println();
+        // *******
         
         // write invokeinterface byte
         iterator.writeByte(Expr.INVOKEINTERFACE, pos);
-        System.out.println("i: " + constPool.getMethodrefClass(iterator.byteAt(pos+2)));
-        System.out.println("i: " + constPool.getMethodrefClassName(iterator.byteAt(pos+2)));
-        System.out.println("i: " + constPool.getMethodrefName(iterator.byteAt(pos+2)));
-        System.out.println("i: " + constPool.getMethodrefNameAndType(iterator.byteAt(pos+2)));
-        System.out.println("i: " + constPool.getMethodrefType(iterator.byteAt(pos+2)));
         
-        String arguments = constPool.getMethodrefType(iterator.byteAt(pos+2));
+        int methodrefIndex = iterator.byteAt(pos+1) + iterator.byteAt(pos+2);
+        System.out.println("BC i:\t" + constPool.getMethodrefClass(methodrefIndex));
+        System.out.println("BC i:\t" + constPool.getMethodrefClassName(methodrefIndex));
+        System.out.println("BC i:\t" + constPool.getMethodrefName(methodrefIndex));
+        System.out.println("BC i:\t" + constPool.getMethodrefNameAndType(methodrefIndex));
+        System.out.println("BC i:\t" + constPool.getMethodrefType(methodrefIndex));
+        
+        String arguments = constPool.getMethodrefType(methodrefIndex);
         int argumentCount = 1;
         for(int i=0; i<arguments.length(); i++)
         	if(arguments.charAt(i) == ';')
         		argumentCount++;
         
-        String methodClass = constPool.getMethodrefClassName(iterator.byteAt(pos+2));
-        String name = constPool.getMethodrefName(iterator.byteAt(pos+2));
-        String type = constPool.getMethodrefType(iterator.byteAt(pos+2));
+        String methodClass = constPool.getMethodrefClassName(methodrefIndex);
+        String name = constPool.getMethodrefName(methodrefIndex);
+        String type = constPool.getMethodrefType(methodrefIndex);
         
-        int lastIndexOfDot = methodClass.lastIndexOf(".");
-		String exprClassNamePrefix = "generated.guice." + methodClass.substring(0, lastIndexOfDot);
-		String exprClassNamePostfix = "";
-		if(lastIndexOfDot != methodClass.length()) {
-			exprClassNamePostfix = "." + "I" + methodClass.substring(lastIndexOfDot+1, methodClass.length());
-		} else {
-			exprClassNamePrefix = "generated.guice." + exprClassNamePrefix;
-		}
-		
-        String interfaceClass = exprClassNamePrefix + exprClassNamePostfix;
+        String interfaceClass = JSeussConfig.GENERATED_PACKAGE_PREFIX + JSeussUtils.getQualifiedInterfaceName(methodClass);
         int classinfo = constPool.addClassInfo(interfaceClass);
-        int interfaceMethodrefInfo = constPool.addInterfaceMethodrefInfo(classinfo, name, type);
-        iterator.writeByte(interfaceMethodrefInfo, pos+2);
-        iterator.writeByte(argumentCount, pos+3); //XXX unsafe position!!!
+        int interfaceMethodrefInfo = constPool.addInterfaceMethodrefInfo(classinfo, name, type); //XXX could be a value greater than 256 (1byte)!!
+        byte[] interfaceMethodrefInfoBytes = JSeussUtils.toByteArray(interfaceMethodrefInfo, 2);
+        iterator.write(interfaceMethodrefInfoBytes, pos+1);
+        
+        // pos+3 = ARGUMENT COUNT
+        if(pos+3 >= codeLength)
+        	iterator.append(new byte[] {(byte)argumentCount});
+        else
+        	iterator.writeByte(argumentCount, pos+3);
 
-        System.out.println(pos+4 + " :: " + codeLength + " byteAt: " + iterator.byteAt(codeLength-1));
         if(pos+4 >= codeLength) {
         	iterator.append(new byte[] {0});
         	iterator.append(bytesAfterInvokeVirtual);
@@ -96,8 +92,8 @@ public class JSeussByteChanger implements ByteChanger {
 	        iterator.writeByte(0, pos+4);
 	        int availableByteCount = codeLength-pos-5;
 	        int overlappingByteCount = bytesAfterInvokeVirtual.length - availableByteCount;
-	        System.out.println("available bytes: " + availableByteCount);
-	        System.out.println("bytes to append: " + overlappingByteCount);
+	        System.out.println("BC available bytes:\t" + availableByteCount);
+	        System.out.println("BC bytes to append:\t" + overlappingByteCount);
 	        
 	        for(int i=0; i<availableByteCount; i++)
 	        	iterator.writeByte(bytesAfterInvokeVirtual[i], i+pos+5);
@@ -106,10 +102,10 @@ public class JSeussByteChanger implements ByteChanger {
 	        	iterator.append(new byte[] {bytesAfterInvokeVirtual[i+availableByteCount]});
         }
         
-        System.out.println("new codelength: " + iterator.getCodeLength());
+        System.out.println("BC new codelength:\t" + iterator.getCodeLength());
         
         // code after
-        System.out.println("after changing: ");
+        System.out.println("BC after changing:\t");
         for(int i=pos; i<iterator.getCodeLength(); i++)
         	System.out.print(Integer.toHexString(iterator.byteAt(i)) + " [" + iterator.byteAt(i) + "] ");
         System.out.println();

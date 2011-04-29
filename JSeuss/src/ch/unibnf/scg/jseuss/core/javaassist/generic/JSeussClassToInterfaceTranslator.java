@@ -1,4 +1,4 @@
-package usecase.classloading;
+package ch.unibnf.scg.jseuss.core.javaassist.generic;
 
 import java.io.IOException;
 
@@ -7,7 +7,6 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
 import javassist.Translator;
-import ch.unibnf.scg.jseuss.core.javaassist.generic.JSeussJavaassist;
 import ch.unibnf.scg.jseuss.core.javaassist.guice.JavaInterfaceGenerator;
 import ch.unibnf.scg.jseuss.utils.JSeussConfig;
 import ch.unibnf.scg.jseuss.utils.JSeussUtils;

@@ -21,7 +21,7 @@ public class EmailApp {
 		});
 		
 		EmailSender es = i.getInstance(EmailSender.class);
-		es.sendEmail();
+		es.run();
 		System.out.println("Language: " + es.getEmail().language );
 	}
 }

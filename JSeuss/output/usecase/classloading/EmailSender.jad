@@ -1,0 +1,57 @@
+// Decompiled by DJ v3.11.11.95 Copyright 2009 Atanas Neshkov  Date: 29.04.2011 15:29:32
+// Home Page: http://members.fortunecity.com/neshkov/dj.html  http://www.neshkov.com/dj.html - Check often for new version!
+// Decompiler options: packimports(3) 
+// Source File Name:   EmailSender.java
+
+package usecase.classloading;
+
+import com.google.inject.Provider;
+import generated.guice.usecase.classloading.*;
+
+// Referenced classes of package usecase.classloading:
+//            FrenchSpellChecker, Email
+
+public class EmailSender
+    implements IEmailSender
+{
+
+    public EmailSender()
+    {
+    }
+
+    public void initialize()
+    {
+    }
+
+    public static void note()
+    {
+    }
+
+    public void sendEmail(Email email)
+    {
+        Object obj = null;
+        IFrenchSpellChecker ifrenchspellchecker = null;
+        ifrenchspellchecker = (IFrenchSpellChecker)iFrenchSpellCheckerProvider.get();
+        FrenchSpellChecker fsc = ifrenchspellchecker;
+        fsc.check(email);
+    }
+
+    public Email getEmail()
+    {
+        return email;
+    }
+
+    public void run()
+    {
+        Object obj = null;
+        IEmail iemail = null;
+        email = iemail = (IEmail)iEmailProvider.get();
+        sendEmail(email);
+    }
+
+    private Email email;
+    @Inject
+    protected Provider iFrenchSpellCheckerProvider;
+    @Inject
+    protected Provider iEmailProvider;
+}
