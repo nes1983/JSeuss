@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="WINDOWS-1252" standalone="no"?>
+<jardesc>
+    <jar path="JSeussDemo/jseuss.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/JSeuss/generateJAR.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="true" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <javaElement handleIdentifier="=JSeuss/src&lt;ch.unibnf.scg.jseuss.core.javaassist.generic{NewExprEditor.java"/>
+        <javaElement handleIdentifier="=JSeuss/src&lt;ch.unibnf.scg.jseuss.core.javaassist.guice{JavaInterfaceGenerator.java"/>
+        <javaElement handleIdentifier="=JSeuss/src&lt;ch.unibnf.scg.jseuss.core.javaassist.guice{ClassDetails.java"/>
+        <javaElement handleIdentifier="=JSeuss/src&lt;ch.unibnf.scg.jseuss.core.javaassist.generic{FieldAccessExprEditor.java"/>
+        <javaElement handleIdentifier="=JSeuss/src&lt;ch.unibnf.scg.jseuss.core.javaassist.guice{GuiceBinderGenerator.java"/>
+        <javaElement handleIdentifier="=JSeuss/src&lt;ch.unibnf.scg.jseuss.core.javaassist.generic{JSeuss_Javaassist.java"/>
+        <folder path="/JSeuss/javaassist"/>
+        <javaElement handleIdentifier="=JSeuss/src&lt;ch.unibnf.scg.jseuss.utils"/>
+        <javaElement handleIdentifier="=JSeuss/src&lt;ch.unibnf.scg.jseuss.core.javaassist.guice{NewGuiceExprEditor.java"/>
+        <folder path="/JSeuss/asm"/>
+        <javaElement handleIdentifier="=JSeuss/src&lt;ch.unibnf.scg.jseuss.core.javaassist.generic{NewGuiceExprEditor.java"/>
+        <javaElement handleIdentifier="=JSeuss/src&lt;ch.unibnf.scg.jseuss.core.javaassist.guice{ContainerClassHandler.java"/>
+        <javaElement handleIdentifier="=JSeuss/src&lt;ch.unibnf.scg.jseuss.core.javaassist.guice{GuiceProviderGenerator.java"/>
+        <javaElement handleIdentifier="=JSeuss/asm\/asm-3.3-src\/src"/>
+        <javaElement handleIdentifier="=JSeuss/javaassist\/src\/main"/>
+        <javaElement handleIdentifier="=JSeuss/src&lt;ch.unibnf.scg.jseuss.core.javaassist.guice{TheGuiceFactory.java"/>
+    </selectedElements>
+</jardesc>

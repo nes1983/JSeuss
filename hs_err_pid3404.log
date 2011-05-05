@@ -1,0 +1,319 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x6da442db, pid=3404, tid=1156
+#
+# JRE version: 6.0_24-b07
+# Java VM: Java HotSpot(TM) Client VM (19.1-b02 mixed mode, sharing windows-x86 )
+# Problematic frame:
+# V  [jvm.dll+0x1a42db]
+#
+# If you would like to submit a bug report, please visit:
+#   http://java.sun.com/webapps/bugreport/crash.jsp
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x0022a000):  JavaThread "main" [_thread_in_vm, id=1156, stack(0x00230000,0x00280000)]
+
+siginfo: ExceptionCode=0xc0000005, reading address 0x00235b98
+
+Registers:
+EAX=0x0022a398, EBX=0x000000a7, ECX=0x0027eaac, EDX=0x00002e00
+ESP=0x0027ea40, EBP=0x0027ea6c, ESI=0x3483886f, EDI=0x00000000
+EIP=0x6da442db, EFLAGS=0x00010246
+
+Register to memory mapping:
+
+EAX=0x0022a398
+0x0022a398 is pointing to unknown location
+
+EBX=0x000000a7
+0x000000a7 is pointing to unknown location
+
+ECX=0x0027eaac
+0x0027eaac is pointing into the stack for thread: 0x0022a000
+"main" prio=6 tid=0x0022a000 nid=0x484 runnable [0x0027e000]
+   java.lang.Thread.State: RUNNABLE
+
+EDX=0x00002e00
+0x00002e00 is pointing to unknown location
+
+ESP=0x0027ea40
+0x0027ea40 is pointing into the stack for thread: 0x0022a000
+"main" prio=6 tid=0x0022a000 nid=0x484 runnable [0x0027e000]
+   java.lang.Thread.State: RUNNABLE
+
+EBP=0x0027ea6c
+0x0027ea6c is pointing into the stack for thread: 0x0022a000
+"main" prio=6 tid=0x0022a000 nid=0x484 runnable [0x0027e000]
+   java.lang.Thread.State: RUNNABLE
+
+ESI=0x3483886f
+{constMethod} 
+ - klass: {other class}
+ - method:       0x34838890 {method} 'run' '()V' in 'usecase/classloading/EmailSender'
+ - exceptions:   0x38590068
+bci_from(3483886F) = 31; print_codes():
+
+EDI=0x00000000
+0x00000000 is pointing to unknown location
+
+
+Top of Stack: (sp=0x0027ea40)
+0x0027ea40:   0022a000 0027eaac 0000001c 00000025
+0x0027ea50:   0000002e 34838820 0000001f 00000000
+0x0027ea60:   00000005 0027eaac 00000045 0027ea88
+0x0027ea70:   6da446b8 34838890 0022a7ec 00221030
+0x0027ea80:   0022a000 0027eaac 0027eae0 6da44890
+0x0027ea90:   00000005 00000004 0022a7f0 0022a000
+0x0027eaa0:   0022a000 0022a7ec 00000000 0022a7ec
+0x0027eab0:   0022a7f4 0022a7f0 00000045 0022a398 
+
+Instructions: (pc=0x6da442db)
+0x6da442cb:   01 89 45 e4 66 8b 45 e4 86 c4 0f b7 d0 8b 41 10
+0x6da442db:   66 8b 14 90 66 89 54 37 01 eb 79 47 57 56 e8 d2 
+
+
+Stack: [0x00230000,0x00280000],  sp=0x0027ea40,  free space=314k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x1a42db]
+V  [jvm.dll+0x1a46b8]
+V  [jvm.dll+0x1a4890]
+V  [jvm.dll+0xdbf63]
+V  [jvm.dll+0xdec3e]
+V  [jvm.dll+0xe00b9]
+V  [jvm.dll+0x1226cb]
+j  java.lang.Class.getDeclaredConstructors0(Z)[Ljava/lang/reflect/Constructor;+0
+j  java.lang.Class.privateGetDeclaredConstructors(Z)[Ljava/lang/reflect/Constructor;+87
+j  java.lang.Class.getDeclaredConstructors()[Ljava/lang/reflect/Constructor;+10
+j  com.google.inject.spi.InjectionPoint.forConstructorOf(Lcom/google/inject/TypeLiteral;)Lcom/google/inject/spi/InjectionPoint;+20
+j  com.google.inject.ConstructorInjectorStore.createConstructor(Lcom/google/inject/TypeLiteral;Lcom/google/inject/internal/Errors;)Lcom/google/inject/ConstructorInjector;+6
+j  com.google.inject.ConstructorInjectorStore.access$000(Lcom/google/inject/ConstructorInjectorStore;Lcom/google/inject/TypeLiteral;Lcom/google/inject/internal/Errors;)Lcom/google/inject/ConstructorInjector;+3
+j  com.google.inject.ConstructorInjectorStore$1.create(Lcom/google/inject/TypeLiteral;Lcom/google/inject/internal/Errors;)Lcom/google/inject/ConstructorInjector;+6
+j  com.google.inject.ConstructorInjectorStore$1.create(Ljava/lang/Object;Lcom/google/inject/internal/Errors;)Ljava/lang/Object;+6
+j  com.google.inject.internal.FailableCache$1.apply(Ljava/lang/Object;)Ljava/lang/Object;+16
+j  com.google.inject.internal.MapMaker$StrategyImpl.compute(Ljava/lang/Object;Lcom/google/inject/internal/MapMaker$ReferenceEntry;Lcom/google/inject/internal/Function;)Ljava/lang/Object;+2
+j  com.google.inject.internal.MapMaker$StrategyImpl.compute(Ljava/lang/Object;Ljava/lang/Object;Lcom/google/inject/internal/Function;)Ljava/lang/Object;+7
+j  com.google.inject.internal.CustomConcurrentHashMap$ComputingImpl.get(Ljava/lang/Object;)Ljava/lang/Object;+199
+j  com.google.inject.internal.FailableCache.get(Ljava/lang/Object;Lcom/google/inject/internal/Errors;)Ljava/lang/Object;+5
+j  com.google.inject.ConstructorInjectorStore.get(Lcom/google/inject/TypeLiteral;Lcom/google/inject/internal/Errors;)Lcom/google/inject/ConstructorInjector;+6
+j  com.google.inject.ConstructorBindingImpl.initialize(Lcom/google/inject/InjectorImpl;Lcom/google/inject/internal/Errors;)V+16
+j  com.google.inject.InjectorImpl.initializeBinding(Lcom/google/inject/internal/BindingImpl;Lcom/google/inject/internal/Errors;)V+33
+j  com.google.inject.InjectorImpl.createJustInTimeBinding(Lcom/google/inject/Key;Lcom/google/inject/internal/Errors;)Lcom/google/inject/internal/BindingImpl;+138
+j  com.google.inject.InjectorImpl.createJustInTimeBindingRecursive(Lcom/google/inject/Key;Lcom/google/inject/internal/Errors;)Lcom/google/inject/internal/BindingImpl;+49
+j  com.google.inject.InjectorImpl.getJustInTimeBinding(Lcom/google/inject/Key;Lcom/google/inject/internal/Errors;)Lcom/google/inject/internal/BindingImpl;+59
+j  com.google.inject.InjectorImpl.getBindingOrThrow(Lcom/google/inject/Key;Lcom/google/inject/internal/Errors;)Lcom/google/inject/internal/BindingImpl;+20
+j  com.google.inject.InjectorImpl.getInternalFactory(Lcom/google/inject/Key;Lcom/google/inject/internal/Errors;)Lcom/google/inject/internal/InternalFactory;+3
+j  com.google.inject.InjectorImpl.getProviderOrThrow(Lcom/google/inject/Key;Lcom/google/inject/internal/Errors;)Lcom/google/inject/Provider;+3
+j  com.google.inject.InjectorImpl.getProvider(Lcom/google/inject/Key;)Lcom/google/inject/Provider;+12
+j  com.google.inject.InjectorImpl.getProvider(Ljava/lang/Class;)Lcom/google/inject/Provider;+5
+j  com.google.inject.InjectorImpl.getInstance(Ljava/lang/Class;)Ljava/lang/Object;+2
+j  usecase.classloading.EmailApp.main([Ljava/lang/String;)V+21
+v  ~StubRoutines::call_stub
+V  [jvm.dll+0xf0ab9]
+V  [jvm.dll+0x1837d1]
+V  [jvm.dll+0xf0b3d]
+V  [jvm.dll+0x19ebe3]
+V  [jvm.dll+0x19f526]
+V  [jvm.dll+0x11cd49]
+C  [java.dll+0x7136]
+j  sun.reflect.NativeMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+87
+j  sun.reflect.DelegatingMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+6
+j  java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+161
+j  javassist.Loader.run(Ljava/lang/String;[Ljava/lang/String;)V+30
+j  usecase.classloading.UsecaseScenario.testUsecaseScenario()V+31
+v  ~StubRoutines::call_stub
+V  [jvm.dll+0xf0ab9]
+V  [jvm.dll+0x1837d1]
+V  [jvm.dll+0xf0b3d]
+V  [jvm.dll+0x19ebe3]
+V  [jvm.dll+0x19f526]
+V  [jvm.dll+0x11cd49]
+C  [java.dll+0x7136]
+j  sun.reflect.NativeMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+87
+j  sun.reflect.DelegatingMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+6
+j  java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+161
+j  org.junit.runners.model.FrameworkMethod$1.runReflectiveCall()Ljava/lang/Object;+15
+j  org.junit.internal.runners.model.ReflectiveCallable.run()Ljava/lang/Object;+1
+j  org.junit.runners.model.FrameworkMethod.invokeExplosively(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+10
+j  org.junit.internal.runners.statements.InvokeMethod.evaluate()V+12
+j  org.junit.runners.BlockJUnit4ClassRunner.runChild(Lorg/junit/runners/model/FrameworkMethod;Lorg/junit/runner/notification/RunNotifier;)V+31
+j  org.junit.runners.BlockJUnit4ClassRunner.runChild(Ljava/lang/Object;Lorg/junit/runner/notification/RunNotifier;)V+6
+j  org.junit.runners.ParentRunner$3.run()V+12
+j  org.junit.runners.ParentRunner$1.schedule(Ljava/lang/Runnable;)V+1
+j  org.junit.runners.ParentRunner.runChildren(Lorg/junit/runner/notification/RunNotifier;)V+40
+j  org.junit.runners.ParentRunner.access$000(Lorg/junit/runners/ParentRunner;Lorg/junit/runner/notification/RunNotifier;)V+2
+j  org.junit.runners.ParentRunner$2.evaluate()V+8
+j  org.junit.runners.ParentRunner.run(Lorg/junit/runner/notification/RunNotifier;)V+20
+j  org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(Lorg/eclipse/jdt/internal/junit/runner/TestExecution;)V+72
+j  org.eclipse.jdt.internal.junit.runner.TestExecution.run([Lorg/eclipse/jdt/internal/junit/runner/ITestReference;)V+17
+j  org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests([Ljava/lang/String;Ljava/lang/String;Lorg/eclipse/jdt/internal/junit/runner/TestExecution;)V+61
+j  org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(Lorg/eclipse/jdt/internal/junit/runner/TestExecution;)V+10
+j  org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run()V+70
+j  org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main([Ljava/lang/String;)V+14
+v  ~StubRoutines::call_stub
+V  [jvm.dll+0xf0ab9]
+V  [jvm.dll+0x1837d1]
+V  [jvm.dll+0xf0b3d]
+V  [jvm.dll+0xfa0d6]
+V  [jvm.dll+0x101cde]
+C  [javaw.exe+0x2155]
+C  [javaw.exe+0x8614]
+C  [kernel32.dll+0x133ca]
+C  [ntdll.dll+0x39ed2]
+C  [ntdll.dll+0x39ea5]
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  java.lang.Class.getDeclaredConstructors0(Z)[Ljava/lang/reflect/Constructor;+0
+j  java.lang.Class.privateGetDeclaredConstructors(Z)[Ljava/lang/reflect/Constructor;+87
+j  java.lang.Class.getDeclaredConstructors()[Ljava/lang/reflect/Constructor;+10
+j  com.google.inject.spi.InjectionPoint.forConstructorOf(Lcom/google/inject/TypeLiteral;)Lcom/google/inject/spi/InjectionPoint;+20
+j  com.google.inject.ConstructorInjectorStore.createConstructor(Lcom/google/inject/TypeLiteral;Lcom/google/inject/internal/Errors;)Lcom/google/inject/ConstructorInjector;+6
+j  com.google.inject.ConstructorInjectorStore.access$000(Lcom/google/inject/ConstructorInjectorStore;Lcom/google/inject/TypeLiteral;Lcom/google/inject/internal/Errors;)Lcom/google/inject/ConstructorInjector;+3
+j  com.google.inject.ConstructorInjectorStore$1.create(Lcom/google/inject/TypeLiteral;Lcom/google/inject/internal/Errors;)Lcom/google/inject/ConstructorInjector;+6
+j  com.google.inject.ConstructorInjectorStore$1.create(Ljava/lang/Object;Lcom/google/inject/internal/Errors;)Ljava/lang/Object;+6
+j  com.google.inject.internal.FailableCache$1.apply(Ljava/lang/Object;)Ljava/lang/Object;+16
+j  com.google.inject.internal.MapMaker$StrategyImpl.compute(Ljava/lang/Object;Lcom/google/inject/internal/MapMaker$ReferenceEntry;Lcom/google/inject/internal/Function;)Ljava/lang/Object;+2
+j  com.google.inject.internal.MapMaker$StrategyImpl.compute(Ljava/lang/Object;Ljava/lang/Object;Lcom/google/inject/internal/Function;)Ljava/lang/Object;+7
+j  com.google.inject.internal.CustomConcurrentHashMap$ComputingImpl.get(Ljava/lang/Object;)Ljava/lang/Object;+199
+j  com.google.inject.internal.FailableCache.get(Ljava/lang/Object;Lcom/google/inject/internal/Errors;)Ljava/lang/Object;+5
+j  com.google.inject.ConstructorInjectorStore.get(Lcom/google/inject/TypeLiteral;Lcom/google/inject/internal/Errors;)Lcom/google/inject/ConstructorInjector;+6
+j  com.google.inject.ConstructorBindingImpl.initialize(Lcom/google/inject/InjectorImpl;Lcom/google/inject/internal/Errors;)V+16
+j  com.google.inject.InjectorImpl.initializeBinding(Lcom/google/inject/internal/BindingImpl;Lcom/google/inject/internal/Errors;)V+33
+j  com.google.inject.InjectorImpl.createJustInTimeBinding(Lcom/google/inject/Key;Lcom/google/inject/internal/Errors;)Lcom/google/inject/internal/BindingImpl;+138
+j  com.google.inject.InjectorImpl.createJustInTimeBindingRecursive(Lcom/google/inject/Key;Lcom/google/inject/internal/Errors;)Lcom/google/inject/internal/BindingImpl;+49
+j  com.google.inject.InjectorImpl.getJustInTimeBinding(Lcom/google/inject/Key;Lcom/google/inject/internal/Errors;)Lcom/google/inject/internal/BindingImpl;+59
+j  com.google.inject.InjectorImpl.getBindingOrThrow(Lcom/google/inject/Key;Lcom/google/inject/internal/Errors;)Lcom/google/inject/internal/BindingImpl;+20
+j  com.google.inject.InjectorImpl.getInternalFactory(Lcom/google/inject/Key;Lcom/google/inject/internal/Errors;)Lcom/google/inject/internal/InternalFactory;+3
+j  com.google.inject.InjectorImpl.getProviderOrThrow(Lcom/google/inject/Key;Lcom/google/inject/internal/Errors;)Lcom/google/inject/Provider;+3
+j  com.google.inject.InjectorImpl.getProvider(Lcom/google/inject/Key;)Lcom/google/inject/Provider;+12
+j  com.google.inject.InjectorImpl.getProvider(Ljava/lang/Class;)Lcom/google/inject/Provider;+5
+j  com.google.inject.InjectorImpl.getInstance(Ljava/lang/Class;)Ljava/lang/Object;+2
+j  usecase.classloading.EmailApp.main([Ljava/lang/String;)V+21
+v  ~StubRoutines::call_stub
+j  sun.reflect.NativeMethodAccessorImpl.invoke0(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+0
+j  sun.reflect.NativeMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+87
+j  sun.reflect.DelegatingMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+6
+j  java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+161
+j  javassist.Loader.run(Ljava/lang/String;[Ljava/lang/String;)V+30
+j  usecase.classloading.UsecaseScenario.testUsecaseScenario()V+31
+v  ~StubRoutines::call_stub
+j  sun.reflect.NativeMethodAccessorImpl.invoke0(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+0
+j  sun.reflect.NativeMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+87
+j  sun.reflect.DelegatingMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+6
+j  java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+161
+j  org.junit.runners.model.FrameworkMethod$1.runReflectiveCall()Ljava/lang/Object;+15
+j  org.junit.internal.runners.model.ReflectiveCallable.run()Ljava/lang/Object;+1
+j  org.junit.runners.model.FrameworkMethod.invokeExplosively(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+10
+j  org.junit.internal.runners.statements.InvokeMethod.evaluate()V+12
+j  org.junit.runners.BlockJUnit4ClassRunner.runChild(Lorg/junit/runners/model/FrameworkMethod;Lorg/junit/runner/notification/RunNotifier;)V+31
+j  org.junit.runners.BlockJUnit4ClassRunner.runChild(Ljava/lang/Object;Lorg/junit/runner/notification/RunNotifier;)V+6
+j  org.junit.runners.ParentRunner$3.run()V+12
+j  org.junit.runners.ParentRunner$1.schedule(Ljava/lang/Runnable;)V+1
+j  org.junit.runners.ParentRunner.runChildren(Lorg/junit/runner/notification/RunNotifier;)V+40
+j  org.junit.runners.ParentRunner.access$000(Lorg/junit/runners/ParentRunner;Lorg/junit/runner/notification/RunNotifier;)V+2
+j  org.junit.runners.ParentRunner$2.evaluate()V+8
+j  org.junit.runners.ParentRunner.run(Lorg/junit/runner/notification/RunNotifier;)V+20
+j  org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(Lorg/eclipse/jdt/internal/junit/runner/TestExecution;)V+72
+j  org.eclipse.jdt.internal.junit.runner.TestExecution.run([Lorg/eclipse/jdt/internal/junit/runner/ITestReference;)V+17
+j  org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests([Ljava/lang/String;Ljava/lang/String;Lorg/eclipse/jdt/internal/junit/runner/TestExecution;)V+61
+j  org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(Lorg/eclipse/jdt/internal/junit/runner/TestExecution;)V+10
+j  org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run()V+70
+j  org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main([Ljava/lang/String;)V+14
+v  ~StubRoutines::call_stub
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x04b5d400 JavaThread "com.google.inject.internal.Finalizer" daemon [_thread_blocked, id=3340, stack(0x051c0000,0x05210000)]
+  0x04ad8400 JavaThread "ReaderThread" [_thread_in_native, id=4484, stack(0x04cd0000,0x04d20000)]
+  0x0243f800 JavaThread "Low Memory Detector" daemon [_thread_blocked, id=816, stack(0x04960000,0x049b0000)]
+  0x0243ac00 JavaThread "CompilerThread0" daemon [_thread_blocked, id=6852, stack(0x048d0000,0x04920000)]
+  0x02439c00 JavaThread "Attach Listener" daemon [_thread_blocked, id=5244, stack(0x04840000,0x04890000)]
+  0x02436c00 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=876, stack(0x047b0000,0x04800000)]
+  0x0242b800 JavaThread "Finalizer" daemon [_thread_blocked, id=1936, stack(0x04720000,0x04770000)]
+  0x0242a000 JavaThread "Reference Handler" daemon [_thread_blocked, id=2672, stack(0x04690000,0x046e0000)]
+=>0x0022a000 JavaThread "main" [_thread_in_vm, id=1156, stack(0x00230000,0x00280000)]
+
+Other Threads:
+  0x023ee800 VMThread [stack: 0x04600000,0x04650000] [id=6356]
+  0x02449400 WatcherThread [stack: 0x049f0000,0x04a40000] [id=6332]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap
+ def new generation   total 4928K, used 3420K [0x24590000, 0x24ae0000, 0x29ae0000)
+  eden space 4416K,  75% used [0x24590000, 0x248ce020, 0x249e0000)
+  from space 512K,  19% used [0x24a60000, 0x24a79328, 0x24ae0000)
+  to   space 512K,   0% used [0x249e0000, 0x249e0000, 0x24a60000)
+ tenured generation   total 10944K, used 291K [0x29ae0000, 0x2a590000, 0x34590000)
+   the space 10944K,   2% used [0x29ae0000, 0x29b28da8, 0x29b28e00, 0x2a590000)
+ compacting perm gen  total 12288K, used 2722K [0x34590000, 0x35190000, 0x38590000)
+   the space 12288K,  22% used [0x34590000, 0x34838ad0, 0x34838c00, 0x35190000)
+    ro space 10240K,  54% used [0x38590000, 0x38b0d9f8, 0x38b0da00, 0x38f90000)
+    rw space 12288K,  55% used [0x38f90000, 0x396313f8, 0x39631400, 0x39b90000)
+
+Dynamic libraries:
+0x00400000 - 0x00424000 	C:\Program Files (x86)\Java\jdk1.6.0_24\bin\javaw.exe
+0x76f20000 - 0x770a0000 	C:\Windows\SysWOW64\ntdll.dll
+0x749f0000 - 0x74b00000 	C:\Windows\syswow64\kernel32.dll
+0x74b00000 - 0x74b46000 	C:\Windows\syswow64\KERNELBASE.dll
+0x75d60000 - 0x75e00000 	C:\Windows\syswow64\ADVAPI32.dll
+0x74c60000 - 0x74d0c000 	C:\Windows\syswow64\msvcrt.dll
+0x75e00000 - 0x75e19000 	C:\Windows\SysWOW64\sechost.dll
+0x764b0000 - 0x765a0000 	C:\Windows\syswow64\RPCRT4.dll
+0x74610000 - 0x74670000 	C:\Windows\syswow64\SspiCli.dll
+0x74600000 - 0x7460c000 	C:\Windows\syswow64\CRYPTBASE.dll
+0x75b00000 - 0x75c00000 	C:\Windows\syswow64\USER32.dll
+0x76420000 - 0x764b0000 	C:\Windows\syswow64\GDI32.dll
+0x748d0000 - 0x748da000 	C:\Windows\syswow64\LPK.dll
+0x762f0000 - 0x7638d000 	C:\Windows\syswow64\USP10.dll
+0x76600000 - 0x76660000 	C:\Windows\system32\IMM32.DLL
+0x76100000 - 0x761cc000 	C:\Windows\syswow64\MSCTF.dll
+0x7c340000 - 0x7c396000 	C:\Program Files (x86)\Java\jdk1.6.0_24\jre\bin\msvcr71.dll
+0x6d8a0000 - 0x6db46000 	C:\Program Files (x86)\Java\jdk1.6.0_24\jre\bin\client\jvm.dll
+0x71d40000 - 0x71d72000 	C:\Windows\system32\WINMM.dll
+0x72520000 - 0x7256c000 	C:\Windows\system32\apphelp.dll
+0x6d850000 - 0x6d85c000 	C:\Program Files (x86)\Java\jdk1.6.0_24\jre\bin\verify.dll
+0x6d3d0000 - 0x6d3ef000 	C:\Program Files (x86)\Java\jdk1.6.0_24\jre\bin\java.dll
+0x6d330000 - 0x6d338000 	C:\Program Files (x86)\Java\jdk1.6.0_24\jre\bin\hpi.dll
+0x74820000 - 0x74825000 	C:\Windows\syswow64\PSAPI.DLL
+0x6d890000 - 0x6d89f000 	C:\Program Files (x86)\Java\jdk1.6.0_24\jre\bin\zip.dll
+0x6d6b0000 - 0x6d6c3000 	C:\Program Files (x86)\Java\jdk1.6.0_24\jre\bin\net.dll
+0x74890000 - 0x748c5000 	C:\Windows\syswow64\WS2_32.dll
+0x76390000 - 0x76396000 	C:\Windows\syswow64\NSI.dll
+0x72990000 - 0x729cc000 	C:\Windows\system32\mswsock.dll
+0x727a0000 - 0x727a6000 	C:\Windows\System32\wship6.dll
+0x72980000 - 0x72985000 	C:\Windows\System32\wshtcpip.dll
+
+VM Arguments:
+jvm_args: -ea -Xverify:none -Dfile.encoding=UTF-8 
+java_command: org.eclipse.jdt.internal.junit.runner.RemoteTestRunner -version 3 -port 50879 -testLoaderClass org.eclipse.jdt.internal.junit4.runner.JUnit4TestLoader -loaderpluginname org.eclipse.jdt.junit4.runtime -classNames usecase.classloading.UsecaseScenario
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=C:\Program Files\Java\jdk1.6.0_21
+CLASSPATH=.;C:\Program Files (x86)\Java\jre6\lib\ext\QTJava.zip
+PATH=C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Lenovo\Access Connections\;c:\Program Files (x86)\Microsoft SQL Server\90\Tools\binn\;F:\zzfaststart;c:\Program Files\java\jdk1.6.0_21\bin;C:\Program Files\Microsoft Network Monitor 3\;C:\Program Files (x86)\QuickTime\QTSystem\;C:\android-sdk-windows\;C:\Program Files\TortoiseSVN\bin;C:\Program Files\SlikSvn\bin\;C:\apache-maven-3.0\bin;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\
+USERNAME=vs
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 37 Stepping 2, GenuineIntel
+
+
+
+---------------  S Y S T E M  ---------------
+
+OS: Windows 7 Build 7601 Service Pack 1
+
+CPU:total 4 (2 cores per cpu, 2 threads per core) family 6 model 37 stepping 2, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, ht
+
+Memory: 4k page, physical 4050608k(1475240k free), swap 8099372k(4898596k free)
+
+vm_info: Java HotSpot(TM) Client VM (19.1-b02) for windows-x86 JRE (1.6.0_24-b07), built on Feb  2 2011 17:44:41 by "java_re" with MS VC++ 7.1 (VS2003)
+
+time: Thu Apr 28 00:07:08 2011
+elapsed time: 0 seconds
+
