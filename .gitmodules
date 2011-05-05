@@ -1,0 +1,3 @@
+[submodule "lombok"]
+	path = lombok
+	url = git://github.com/rzwitserloot/lombok.git
