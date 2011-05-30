@@ -3,6 +3,10 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="asm/asm-3.3-src/src"/>
 	<classpathentry kind="src" path="javaassist/src/main"/>
+	<classpathentry kind="src" path="lombok/src/core"/>
+	<classpathentry kind="src" path="lombok/src/contrib"/>
+	<classpathentry kind="src" path="lombok/src/delombok"/>
+	<classpathentry kind="src" path="lombok/src/eclipseAgent"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="codemodel-2.3.jar"/>
 	<classpathentry kind="lib" path="SpellCheckerInterface.jar"/>
@@ -18,8 +22,33 @@
 	<classpathentry kind="lib" path="guice-spring-2.0.jar"/>
 	<classpathentry kind="lib" path="guice-struts2-plugin-2.0.jar"/>
 	<classpathentry kind="lib" path="guice-throwingproviders-2.0.jar"/>
-	<classpathentry kind="lib" path="javassist.jar"/>
+	<classpathentry kind="lib" path="lombok/lib/build/ant-googlecode.jar"/>
+	<classpathentry kind="lib" path="lombok/lib/build/ant-launcher.jar"/>
+	<classpathentry kind="lib" path="lombok/lib/build/ant.jar"/>
+	<classpathentry kind="lib" path="lombok/lib/build/boot.jar"/>
+	<classpathentry kind="lib" path="lombok/lib/build/cmdreader.jar"/>
+	<classpathentry kind="lib" path="lombok/lib/build/core.runtime.jar"/>
+	<classpathentry kind="lib" path="lombok/lib/build/ecj.jar"/>
+	<classpathentry kind="lib" path="lombok/lib/build/equinox.common.jar"/>
+	<classpathentry kind="lib" path="lombok/lib/build/jarjar.jar"/>
+	<classpathentry kind="lib" path="lombok/lib/build/java2html.jar"/>
+	<classpathentry kind="lib" path="lombok/lib/build/javac.jar"/>
+	<classpathentry kind="lib" path="lombok/lib/build/jdt.core.jar"/>
+	<classpathentry kind="lib" path="lombok/lib/build/jdt.ui.jar"/>
+	<classpathentry kind="lib" path="lombok/lib/build/jsch-ant-fixed.jar"/>
+	<classpathentry kind="lib" path="lombok/lib/build/jsch.jar"/>
+	<classpathentry kind="lib" path="lombok/lib/build/lombok.patcher.jar"/>
+	<classpathentry kind="lib" path="lombok/lib/build/markdownj.jar"/>
+	<classpathentry kind="lib" path="lombok/lib/build/modules.java.source.jar"/>
+	<classpathentry kind="lib" path="lombok/lib/build/openide.modules.jar"/>
+	<classpathentry kind="lib" path="lombok/lib/build/openide.util.jar"/>
+	<classpathentry kind="lib" path="lombok/lib/build/osgi.jar"/>
+	<classpathentry kind="lib" path="lombok/lib/build/spi.jar"/>
+	<classpathentry kind="lib" path="commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="mysql-connector-java-5.1.16-bin.jar"/>
+	<classpathentry kind="lib" path="mockito-all-1.8.5.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="output"/>
+	<classpathentry kind="lib" path="C:/Program Files/eclipse/morbok.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

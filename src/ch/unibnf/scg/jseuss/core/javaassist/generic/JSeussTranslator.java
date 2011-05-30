@@ -48,11 +48,12 @@ public class JSeussTranslator implements Translator {
 			JSeussJavaassist.guicify(currentClass);
 		}
 		
-		JSeussJavaassist.changeCasts(currentClass);
-		JSeussJavaassist.changeFields(currentClass);
-		JSeussJavaassist.changeMethods(currentClass);
+		//XXX Start ReEnable after Demo
+//		JSeussJavaassist.changeCasts(currentClass);
+//		JSeussJavaassist.changeFields(currentClass);
+//		JSeussJavaassist.changeMethods(currentClass);
+		//XXX End ReEnable after Demo
 		
-//		
 //		ConstPool cp = currentClass.getClassFile().getConstPool();
 //		List<String> alreadyChecked = new ArrayList<String>();
 //		List<String> classesToReplace = new ArrayList<String>();

@@ -118,15 +118,19 @@ public class JSeussJavaassist {
 	 * @throws CannotCompileException
 	 */
 	public static void writeCtClass(CtClass ctClass, boolean debugFolder) throws IOException, CannotCompileException {
+		ctClass.rebuildClassFile();//XXX experimental
 		DataInputStream dis = new DataInputStream(new ByteArrayInputStream(ctClass.toBytecode()));
 		ClassFile cf = new ClassFile(dis);
 		cf.setVersionToJava5();
+		cf.compact();//XXX experimental
 		
 		String debugString = "";
 		if(debugFolder)
 			debugString = "DEBUG";
 	
 		File f = new File(JSeussConfig.OUTPUT_DIR + ctClass.getName().replace('.', '/') + debugString + ".class");
+		File folder = new File(JSeussConfig.OUTPUT_DIR + ctClass.getPackageName().replace('.', '/'));
+		folder.mkdirs();
 		cf.write(new DataOutputStream(new FileOutputStream(f)));
 		
 		System.out.println("WROTE FILE TO DISK:\t" + cf.getName() + debugString);
@@ -143,7 +147,17 @@ public class JSeussJavaassist {
 	public static void changeFields(CtClass clazz) throws NotFoundException {
 		CtField[] fields = clazz.getDeclaredFields();
 		for(CtField field : fields) {
+			System.out.println("+++ " + field.getName());
+			System.out.println("CHANGING FIELDTYPE FROM:\t" + field.getFieldInfo().getDescriptor());
 			field.setType(ourType(field.getType()));
+			System.out.println("CHANGING FIELDTYPE TO:\t" + field.getFieldInfo().getDescriptor());
+		}
+		
+		for(CtField field : clazz.getFields()) {
+			System.out.println("%%% " + field.getName());
+			System.out.println("CHANGING FIELDTYPE FROM:\t" + field.getFieldInfo().getDescriptor());
+			field.setType(ourType(field.getType()));
+			System.out.println("CHANGING FIELDTYPE TO:\t" + field.getFieldInfo().getDescriptor());
 		}
 		
 	}
@@ -159,7 +173,7 @@ public class JSeussJavaassist {
 	}
 	
 	private static String adjustMethodDescriptor(String methodDescriptor) {
-		//TODO
+		//TODO add interface check
 		System.out.println("SHOULD ADJUST\t" + methodDescriptor);
 		String[] classNames = JSeussUtils.getQualifiedClassNames(methodDescriptor);
 		for(String className : classNames) {

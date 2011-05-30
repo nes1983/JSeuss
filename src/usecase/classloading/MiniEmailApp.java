@@ -2,7 +2,6 @@ package usecase.classloading;
 
 import javassist.ClassPool;
 import javassist.Loader;
-import ch.unibnf.scg.jseuss.core.javaassist.generic.JSeussClassToInterfaceTranslator;
 import ch.unibnf.scg.jseuss.core.javaassist.generic.JSeussTranslator;
 
 public class MiniEmailApp {
